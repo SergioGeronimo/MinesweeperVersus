@@ -7,13 +7,6 @@ public class Board {
     private int rows;
     private int mines;
 
-    public int getFlaggedMines() {
-        return flaggedMines;
-    }
-
-    public void setFlaggedMines(int flaggedMines) {
-        this.flaggedMines = flaggedMines;
-    }
 
     private int flaggedMines;
     private Box[][] grid;
@@ -50,6 +43,14 @@ public class Board {
         this.grid = grid;
     }
 
+    public int getFlaggedMines() {
+        return flaggedMines;
+    }
+
+    public void setFlaggedMines(int flaggedMines) {
+        this.flaggedMines = flaggedMines;
+    }
+
     public Box getBoxAt(int columnIndex, int rowIndex) throws ArrayIndexOutOfBoundsException{
         return grid[rowIndex][columnIndex];
     }
@@ -76,7 +77,7 @@ public class Board {
         Random random = new Random();
         int boxCount = this.columns * this.rows;
         int avoidedIndex = avoidedRow * grid[0].length + avoidedColumn;
-        System.out.println("avoidedColumn = " + avoidedColumn + " avoidedRow = " + avoidedRow + "avoidedIndex = " + avoidedIndex);
+        //System.out.println("avoidedColumn = " + avoidedColumn + " avoidedRow = " + avoidedRow + "avoidedIndex = " + avoidedIndex);
 
         boolean[] minesLocation = new boolean[boxCount];
         int minesLeftToPlace = mines;
@@ -98,7 +99,7 @@ public class Board {
                     grid[columnIndex][rowIndex] = new Box(BoxValue.START, BoxStatus.HIDDEN);
                 }
                 else{
-                    grid[columnIndex][rowIndex] = new Box(BoxValue.EMPTY, BoxStatus.HIDDEN);
+                    grid[columnIndex][rowIndex] = new Box(BoxValue.NONE_NEAR, BoxStatus.HIDDEN);
                 }
                 mineIndex++;
 
@@ -158,5 +159,9 @@ public class Board {
         }
 
         return this.grid;
+    }
+
+    public void setBoxStatus(int column, int row, BoxStatus boxStatus) {
+        grid[row][column].setStatus(boxStatus);
     }
 }

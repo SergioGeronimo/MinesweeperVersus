@@ -4,7 +4,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane gridLinesVisible="true" alignment="BASELINE_CENTER" minWidth="1024.0" prefHeight="576.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.GameLayoutController">
+<GridPane
+        alignment="BASELINE_CENTER"
+        minWidth="1024.0"
+        prefHeight="576.0"
+        xmlns="http://javafx.com/javafx/11.0.1"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="client.ui.GameLayoutController">
 
     <columnConstraints>
         <ColumnConstraints hgrow="ALWAYS" maxWidth="32" />
@@ -45,7 +51,14 @@
 
 
     <!--player board container -->
-    <GridPane gridLinesVisible="true" fx:id="playerBoardContainer" onMouseClicked="#setMatchReady" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="6">
+    <GridPane
+            gridLinesVisible="true"
+            fx:id="playerBoardContainer"
+            onMouseClicked="#setMatchReady"
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="2"
+            GridPane.rowSpan="6">
+
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" />
         </columnConstraints>

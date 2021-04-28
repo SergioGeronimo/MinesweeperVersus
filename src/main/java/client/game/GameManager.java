@@ -1,6 +1,9 @@
 package client.game;
 
 import model.board.Board;
+import model.board.Box;
+import model.board.BoxStatus;
+import model.board.BoxValue;
 
 public class GameManager {
 
@@ -16,8 +19,8 @@ public class GameManager {
     }
 
     public void setMatchReady() {
-        playerBoard = new Board(10,10,10);
-        rivalBoard = new Board(10,10,10);
+        playerBoard = new Board(columns,rows,mines);
+        rivalBoard = new Board(columns,rows, mines);
         playerBoard.generateEmptyGrid();
         rivalBoard.generateEmptyGrid();
     }
@@ -63,5 +66,26 @@ public class GameManager {
     }
 
     public void startMatchAt(int column, int row) {
+        playerBoard.generateMines(column, row);
+        playerBoard.fillNearIndicators();
+    }
+
+    public BoxValue revealPlayerBoxValue(int column, int row) {
+        playerBoard.setBoxStatus(column, row, BoxStatus.VISIBLE);
+
+        return playerBoard.getBoxAt(column, row).getValue();
+    }
+
+    public void toggleFlagStatus(int column, int row){
+        Box box = playerBoard.getBoxAt(column, row);
+
+        switch (box.getStatus()){
+            case HIDDEN:
+                box.setStatus(BoxStatus.FLAGGED);
+                break;
+            case FLAGGED:
+                box.setStatus(BoxStatus.HIDDEN);
+                break;
+        }
     }
 }

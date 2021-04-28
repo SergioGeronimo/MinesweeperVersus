@@ -63,7 +63,7 @@ class BoardTest {
                     case START:
                         System.out.print("S\t");
                         break;
-                    case EMPTY:
+                    case NONE_NEAR:
                         System.out.print("0\t");
                         break;
                     case ONE_NEAR:
