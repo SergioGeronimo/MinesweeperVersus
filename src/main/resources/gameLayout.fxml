@@ -45,8 +45,11 @@
         <rowConstraints>
             <RowConstraints vgrow="ALWAYS" />
         </rowConstraints>
+
+
         <Label text="Mines left" GridPane.columnIndex="0" GridPane.fillWidth="" GridPane.halignment="CENTER" />
         <Label text="You" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+        <Label text="Flagged mines" GridPane.columnIndex="2" GridPane.halignment="CENTER"/>
     </GridPane>
 
 
@@ -85,8 +88,10 @@
             <RowConstraints vgrow="ALWAYS" />
         </rowConstraints>
 
+        <Label text="Flagged mines" GridPane.columnIndex="0" GridPane.halignment="CENTER"/>
         <Label text="Rival" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
         <Label text="Mines left" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+
 
     </GridPane>
 

@@ -7,6 +7,11 @@ public class Box {
     public Box() {
     }
 
+    public Box(BoxValue value) {
+        this.value = value;
+        this.status = BoxStatus.HIDDEN;
+    }
+
     public Box(BoxValue value, BoxStatus status) {
         this.value = value;
         this.status = status;

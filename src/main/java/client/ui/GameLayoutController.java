@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import model.board.Board;
+import model.board.Box;
 import model.board.BoxValue;
 
 public class GameLayoutController {
@@ -26,7 +28,7 @@ public class GameLayoutController {
 
 
     public void setMatchReady(MouseEvent mouseEvent) {
-        gameManager = new GameManager(10, 10, 10);
+        gameManager = new GameManager(10, 10, 5);
         gameManager.setMatchReady();
 
         playerBoxArray = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
@@ -58,34 +60,73 @@ public class GameLayoutController {
      */
     public void startMatch(MouseEvent mouseEvent){
         GameBoxButton source = (GameBoxButton) mouseEvent.getSource();
-        System.out.println();
+
         gameManager.startMatchAt(source.getColumn(), source.getRow());
 
 
         for (int rowIndex = 0; rowIndex < playerBoxArray.length; rowIndex++) {
             for (int colIndex = 0; colIndex < playerBoxArray[0].length; colIndex++) {
-                GameBoxButton boxButton = new GameBoxButton(colIndex + "," + rowIndex, colIndex, rowIndex);
-                playerBoxArray[colIndex][rowIndex].setOnMouseClicked(this::manageBoxClicked);
+
+
+                playerBoxArray[colIndex][rowIndex].setBox(gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex));
+                playerBoxArray[colIndex][rowIndex].setOnMouseClicked(this::handleBoxClicked);
+
+
+            }
+        }
+
+        handleBoxClicked(mouseEvent);
+    }
+
+    public void updateBoxVisibility(){
+        Board playerBoard = gameManager.getPlayerBoard();
+
+        for (int rowIndex = 0; rowIndex < playerBoard.getRows(); rowIndex++) {
+            for (int colIndex = 0; colIndex < playerBoard.getColumns(); colIndex++) {
+
+
+                Box box = gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex);
+                GameBoxButton gameBoxButton = playerBoxArray[colIndex][rowIndex];
+
+                switch (box.getStatus()){
+                    case FLAGGED:
+                        gameBoxButton.setText("F");
+                        break;
+                    case VISIBLE:
+                        gameBoxButton.setText(box.getValue().getValue()+"");
+                        break;
+                    case HIDDEN:
+                        gameBoxButton.setText("");
+                        break;
+
+                }
+
             }
         }
 
     }
 
-    public void manageBoxClicked(MouseEvent mouseEvent){
+
+
+    public void handleBoxClicked(MouseEvent mouseEvent){
         GameBoxButton boxButtonSource = (GameBoxButton) mouseEvent.getSource();
         int boxColumn = boxButtonSource.getColumn();
         int boxRow = boxButtonSource.getRow();
+        System.out.println("x = " + boxColumn + ", y = " + boxRow);
 
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
             BoxValue boxValue = gameManager.revealPlayerBoxValue(boxColumn, boxRow);
-            playerBoxArray[boxColumn][boxRow].setText(boxValue.getValue()+"");
 
         }else {
+
             gameManager.toggleFlagStatus(boxColumn, boxRow);
 
         }
 
+        updateBoxVisibility();
+
     }
+
 
     // create the board array and fill player gridpane with buttons
     public void fillBoardLayout(int columns, int rows, GridPane boardContainer, GameBoxButton[][] boxButtonsArray, boolean isDisabled){
@@ -110,11 +151,11 @@ public class GameLayoutController {
 
         }
 
-        for (int colCount = 0; colCount < columns; colCount++) {
-            for (int rowCount = 0; rowCount < rows; rowCount++) {
+        for (int rowCount = 0; rowCount < rows; rowCount++) {
+            for (int colCount = 0; colCount < rows; colCount++) {
 
 
-                GameBoxButton boxButton = new GameBoxButton(colCount + "," + rowCount, colCount, rowCount);
+                GameBoxButton boxButton = new GameBoxButton(colCount, rowCount);
                 boxButtonsArray[colCount][rowCount] = boxButton;
 
                 if (isDisabled){

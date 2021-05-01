@@ -56,43 +56,59 @@ class BoardTest {
         // determinar una forma de testear la generacion
     }
 
+    @Test
+    public void canSetVisibleEmptyNeighbours() throws Exception{
+        boardTested.setMines(10);
+        boardTested.generateEmptyGrid();
+        boardTested.generateMines(columns/2, rows/2);
+        boardTested.fillNearIndicators();
+        boardTested.setVisibleEmptyNeighbours(columns/2, rows/2);
+        printBoard(boardTested.getGrid());
+    }
+
     private void printBoard(Box[][] board){
         for (Box[] column: board) {
             for (Box box: column){
                 switch (box.getValue()){
                     case START:
-                        System.out.print("S\t");
+                        System.out.print("S");
                         break;
                     case NONE_NEAR:
-                        System.out.print("0\t");
+                        System.out.print("0");
                         break;
                     case ONE_NEAR:
-                        System.out.print("1\t");
+                        System.out.print("1");
                         break;
                     case TWO_NEAR:
-                        System.out.print("2\t");
+                        System.out.print("2");
                         break;
                     case THREE_NEAR:
-                        System.out.print("3\t");
+                        System.out.print("3");
                         break;
                     case FOUR_NEAR:
-                        System.out.print("4\t");
+                        System.out.print("4");
                         break;
                     case FIVE_NEAR:
-                        System.out.print("5\t");
+                        System.out.print("5");
                         break;
                     case SIX_NEAR:
-                        System.out.print("6\t");
+                        System.out.print("6");
                         break;
                     case SEVEN_NEAR:
-                        System.out.print("7\t");
+                        System.out.print("7");
                         break;
                     case EIGHT_NEAR:
-                        System.out.print("8\t");
+                        System.out.print("8");
                         break;
                     case MINE:
-                        System.out.print("X\t");
+                        System.out.print("X");
                         break;
+                }
+
+                if (box.getStatus() == BoxStatus.VISIBLE) {
+                    System.out.print("V\t");
+                }else{
+                    System.out.print("\t");
                 }
 
             }

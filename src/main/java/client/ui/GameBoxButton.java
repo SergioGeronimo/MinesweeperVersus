@@ -2,9 +2,11 @@ package client.ui;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import model.board.Box;
 
 public class GameBoxButton extends Button {
     private int column, row;
+    private Box box;
 
 
     public GameBoxButton(int column, int row) {
@@ -22,6 +24,34 @@ public class GameBoxButton extends Button {
         super(s, node);
         this.column = column;
         this.row = row;
+    }
+
+    public GameBoxButton(int column, int row, Box box) {
+        this.column = column;
+        this.row = row;
+        this.box = box;
+    }
+
+    public GameBoxButton(String s, int column, int row, Box box) {
+        super(s);
+        this.column = column;
+        this.row = row;
+        this.box = box;
+    }
+
+    public GameBoxButton(String s, Node node, int column, int row, Box box) {
+        super(s, node);
+        this.column = column;
+        this.row = row;
+        this.box = box;
+    }
+
+    public Box getBox() {
+        return box;
+    }
+
+    public void setBox(Box box) {
+        this.box = box;
     }
 
     public int getColumn() {

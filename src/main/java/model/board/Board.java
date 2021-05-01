@@ -2,6 +2,11 @@ package model.board;
 
 import java.util.Random;
 
+/*
+    Clase que crea el tablero, genera las minas evadiendo la casilla de inicia y calcula los valores de casilla
+    marca como VISIBLE las casillas con valor 0 y sus vecinos con valor 0, se detiene hasta encontrar otros valores
+ */
+
 public class Board {
     private int columns;
     private int rows;
@@ -77,7 +82,7 @@ public class Board {
         Random random = new Random();
         int boxCount = this.columns * this.rows;
         int avoidedIndex = avoidedRow * grid[0].length + avoidedColumn;
-        //System.out.println("avoidedColumn = " + avoidedColumn + " avoidedRow = " + avoidedRow + "avoidedIndex = " + avoidedIndex);
+
 
         boolean[] minesLocation = new boolean[boxCount];
         int minesLeftToPlace = mines;
@@ -94,12 +99,10 @@ public class Board {
         for (int columnIndex = 0; columnIndex < grid.length; columnIndex++) {
             for(int rowIndex = 0; rowIndex < grid[columnIndex].length; rowIndex++){
                 if(minesLocation[mineIndex]){
-                    grid[columnIndex][rowIndex] = new Box(BoxValue.MINE, BoxStatus.HIDDEN);
-                }else if(mineIndex == avoidedIndex){
-                    grid[columnIndex][rowIndex] = new Box(BoxValue.START, BoxStatus.HIDDEN);
+                    grid[columnIndex][rowIndex] = new Box(BoxValue.MINE);
                 }
                 else{
-                    grid[columnIndex][rowIndex] = new Box(BoxValue.NONE_NEAR, BoxStatus.HIDDEN);
+                    grid[columnIndex][rowIndex] = new Box(BoxValue.NONE_NEAR);
                 }
                 mineIndex++;
 
@@ -159,6 +162,31 @@ public class Board {
         }
 
         return this.grid;
+    }
+
+    public void setVisibleEmptyNeighbours(int column, int row) throws ArrayIndexOutOfBoundsException{
+        Box box = grid[column][row];
+        if(box.getStatus() == BoxStatus.HIDDEN) {
+            box.setStatus(BoxStatus.VISIBLE);
+
+            if (grid[column][row].getValue() == BoxValue.NONE_NEAR) {
+                for (int rowOffset = -1; rowOffset < 2; rowOffset++) {
+                    for (int colOffset = -1; colOffset < 2; colOffset++) {
+
+                        try {
+                            setVisibleEmptyNeighbours(column+colOffset, row+rowOffset);
+                        }catch (ArrayIndexOutOfBoundsException ignored){
+
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+
+
     }
 
     public void setBoxStatus(int column, int row, BoxStatus boxStatus) {
