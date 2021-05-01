@@ -66,15 +66,16 @@ public class Board {
         this.mines = mines;
     }
 
+
     public Box[][] generateEmptyGrid() {
         this.grid = new Box[rows][columns];
         return this.grid;
     }
 
     /*
-     *  Este metodo genera el mapa con minas puestas pseudoaleatoriamente,
-     *  sin embargo, evita la casilla donde inicia el jugador, asi no hay
-     *  probabilidad de perder al instante
+     *  Genera el mapa con minas puestas pseudoaleatoriamente,
+     *  evita la casilla donde inicia el jugador, asi no hay
+     *  forma de perder al instante
      *  @params columna y renglon de casilla a evitar (inicial)
      *  @returns el tablero generado con minas
      */
@@ -110,6 +111,12 @@ public class Board {
         }
         return this.grid;
     }
+
+    /*
+     *  calcula el numero de minas cercanas y actualiza el valor de la casilla
+     *  @params ninguno
+     *  @returns tablero con minas e indicadores
+     */
 
     public Box[][] fillNearIndicators(){
         for (int columnIndex = 0; columnIndex < grid.length; columnIndex++) {
@@ -164,12 +171,19 @@ public class Board {
         return this.grid;
     }
 
+    /*
+        Desde una casilla seleccionada, checa si las casillas vecinas estan vacias y escondidas
+        si estan vacias, las deja visibles y checa de nuevo en ellas, termina cuando encuentra una
+        casilla no vacia
+        @params coordenadas (columna, renglon) de la casilla a empezar
+        @returns void
+     */
     public void setVisibleEmptyNeighbours(int column, int row) throws ArrayIndexOutOfBoundsException{
-        Box box = grid[column][row];
+        Box box = grid[row][column];
         if(box.getStatus() == BoxStatus.HIDDEN) {
             box.setStatus(BoxStatus.VISIBLE);
 
-            if (grid[column][row].getValue() == BoxValue.NONE_NEAR) {
+            if (grid[row][column].getValue() == BoxValue.NONE_NEAR) {
                 for (int rowOffset = -1; rowOffset < 2; rowOffset++) {
                     for (int colOffset = -1; colOffset < 2; colOffset++) {
 
@@ -186,10 +200,66 @@ public class Board {
         }
 
 
-
     }
 
     public void setBoxStatus(int column, int row, BoxStatus boxStatus) {
         grid[row][column].setStatus(boxStatus);
+    }
+
+    public void printBoard(){
+        for (Box[] column: this.grid) {
+            for (Box box: column){
+                switch (box.getValue()){
+                    case START:
+                        System.out.print("S");
+                        break;
+                    case NONE_NEAR:
+                        System.out.print("0");
+                        break;
+                    case ONE_NEAR:
+                        System.out.print("1");
+                        break;
+                    case TWO_NEAR:
+                        System.out.print("2");
+                        break;
+                    case THREE_NEAR:
+                        System.out.print("3");
+                        break;
+                    case FOUR_NEAR:
+                        System.out.print("4");
+                        break;
+                    case FIVE_NEAR:
+                        System.out.print("5");
+                        break;
+                    case SIX_NEAR:
+                        System.out.print("6");
+                        break;
+                    case SEVEN_NEAR:
+                        System.out.print("7");
+                        break;
+                    case EIGHT_NEAR:
+                        System.out.print("8");
+                        break;
+                    case MINE:
+                        System.out.print("X");
+                        break;
+                }
+
+                switch (box.getStatus()){
+                    case FLAGGED:
+                        System.out.print("F\t");
+                        break;
+                    case HIDDEN:
+                        System.out.print("H\t");
+                        break;
+                    case VISIBLE:
+                        System.out.print("V\t");
+                        break;
+                }
+
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 }

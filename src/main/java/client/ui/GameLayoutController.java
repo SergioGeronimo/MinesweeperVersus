@@ -10,6 +10,8 @@ import model.board.Board;
 import model.board.Box;
 import model.board.BoxValue;
 
+import java.util.Arrays;
+
 public class GameLayoutController {
 
 
@@ -22,30 +24,30 @@ public class GameLayoutController {
     @FXML
     private GridPane playerMatchStats;
 
-    private GameBoxButton[][] playerBoxArray, rivalBoxArray;
+    private GameBoxButton[][] playerBoxButtons, rivalBoxButtons;
 
     GameManager gameManager;
 
 
     public void setMatchReady(MouseEvent mouseEvent) {
-        gameManager = new GameManager(10, 10, 5);
+        gameManager = new GameManager(10, 8, 5);
         gameManager.setMatchReady();
 
-        playerBoxArray = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
-        rivalBoxArray = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
+        playerBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
+        rivalBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
 
-        fillBoardLayout(
+        fillGridPaneWithButtons(
                 gameManager.getColumns(),
                 gameManager.getRows(),
                 playerBoardContainer,
-                playerBoxArray,
+                playerBoxButtons,
                 false);
 
-        fillBoardLayout(
+        fillGridPaneWithButtons(
                 gameManager.getColumns(),
                 gameManager.getRows(),
                 rivalBoardContainer,
-                rivalBoxArray,
+                rivalBoxButtons,
                 false);
 
 
@@ -64,12 +66,12 @@ public class GameLayoutController {
         gameManager.startMatchAt(source.getColumn(), source.getRow());
 
 
-        for (int rowIndex = 0; rowIndex < playerBoxArray.length; rowIndex++) {
-            for (int colIndex = 0; colIndex < playerBoxArray[0].length; colIndex++) {
 
+        for (int rowIndex = 0; rowIndex < playerBoxButtons.length; rowIndex++) {
+            for (int colIndex = 0; colIndex < playerBoxButtons[0].length; colIndex++) {
 
-                playerBoxArray[colIndex][rowIndex].setBox(gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex));
-                playerBoxArray[colIndex][rowIndex].setOnMouseClicked(this::handleBoxClicked);
+                playerBoxButtons[rowIndex][colIndex].setBox(gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex));
+                playerBoxButtons[rowIndex][colIndex].setOnMouseClicked(this::handleBoxClicked);
 
 
             }
@@ -78,7 +80,7 @@ public class GameLayoutController {
         handleBoxClicked(mouseEvent);
     }
 
-    public void updateBoxVisibility(){
+    public void updateAllBoxText(){
         Board playerBoard = gameManager.getPlayerBoard();
 
         for (int rowIndex = 0; rowIndex < playerBoard.getRows(); rowIndex++) {
@@ -86,7 +88,7 @@ public class GameLayoutController {
 
 
                 Box box = gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex);
-                GameBoxButton gameBoxButton = playerBoxArray[colIndex][rowIndex];
+                GameBoxButton gameBoxButton = playerBoxButtons[rowIndex][colIndex];
 
                 switch (box.getStatus()){
                     case FLAGGED:
@@ -101,6 +103,7 @@ public class GameLayoutController {
 
                 }
 
+
             }
         }
 
@@ -112,10 +115,9 @@ public class GameLayoutController {
         GameBoxButton boxButtonSource = (GameBoxButton) mouseEvent.getSource();
         int boxColumn = boxButtonSource.getColumn();
         int boxRow = boxButtonSource.getRow();
-        System.out.println("x = " + boxColumn + ", y = " + boxRow);
 
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            BoxValue boxValue = gameManager.revealPlayerBoxValue(boxColumn, boxRow);
+            gameManager.revealPlayerBoxValue(boxColumn, boxRow);
 
         }else {
 
@@ -123,15 +125,16 @@ public class GameLayoutController {
 
         }
 
-        updateBoxVisibility();
+        updateAllBoxText();
 
     }
 
 
-    // create the board array and fill player gridpane with buttons
-    public void fillBoardLayout(int columns, int rows, GridPane boardContainer, GameBoxButton[][] boxButtonsArray, boolean isDisabled){
+    public void fillGridPaneWithButtons(int columns, int rows, GridPane boardContainer, GameBoxButton[][] boxButtonsArray, boolean isDisabled){
 
         boardContainer.getChildren().clear();
+        boardContainer.setGridLinesVisible(true);
+
 
         ObservableList<ColumnConstraints> containerColumnConstraints = boardContainer.getColumnConstraints();
         containerColumnConstraints.clear();
@@ -152,11 +155,10 @@ public class GameLayoutController {
         }
 
         for (int rowCount = 0; rowCount < rows; rowCount++) {
-            for (int colCount = 0; colCount < rows; colCount++) {
-
+            for (int colCount = 0; colCount < columns; colCount++) {
 
                 GameBoxButton boxButton = new GameBoxButton(colCount, rowCount);
-                boxButtonsArray[colCount][rowCount] = boxButton;
+                boxButtonsArray[rowCount][colCount] = boxButton;
 
                 if (isDisabled){
                     boxButton.setDisable(true);

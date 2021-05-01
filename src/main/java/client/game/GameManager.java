@@ -7,7 +7,7 @@ import model.board.BoxValue;
 
 public class GameManager {
 
-    //static ConnectionManager connectionManager;
+
 
     private Board playerBoard, rivalBoard;
     private int columns, rows, mines;
@@ -20,13 +20,6 @@ public class GameManager {
         this.columns = columns;
         this.rows = rows;
         this.mines = mines;
-    }
-
-    public void setMatchReady() {
-        playerBoard = new Board(columns,rows,mines);
-        rivalBoard = new Board(columns,rows, mines);
-        playerBoard.generateEmptyGrid();
-        rivalBoard.generateEmptyGrid();
     }
 
     public Board getPlayerBoard() {
@@ -69,25 +62,44 @@ public class GameManager {
         this.mines = mines;
     }
 
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+
+    public void setMatchReady() {
+        playerBoard = new Board(columns,rows,mines);
+        rivalBoard = new Board(columns,rows, mines);
+        playerBoard.generateEmptyGrid();
+        rivalBoard.generateEmptyGrid();
+    }
+
+    //genera minas y los indicadores
     public void startMatchAt(int column, int row) {
         playerBoard.generateMines(column, row);
         playerBoard.fillNearIndicators();
     }
 
-    public BoxValue revealPlayerBoxValue(int column, int row) {
-        //playerBoard.setBoxStatus(column, row, BoxStatus.VISIBLE);
 
+    public void revealPlayerBoxValue(int column, int row) {
         try {
             playerBoard.setVisibleEmptyNeighbours(column, row);
         }catch (ArrayIndexOutOfBoundsException ignored){
 
         }
-
+        playerBoard.printBoard();
         calculateGameState(column, row, false);
 
-        return playerBoard.getBoxAt(column, row).getValue();
     }
 
+
+    /*  calcula el estado del juego con una casilla
+     *  @param coordenadas de la casilla(column, row) y playerDroppedFlag si en esa casilla se quito una bandera
+     */
     private void calculateGameState(int column, int row, boolean playerDroppedFlag) {
         Box box = playerBoard.getBoxAt(column, row);
 
@@ -105,21 +117,10 @@ public class GameManager {
         }else if(playerDroppedFlag && box.getValue() == BoxValue.MINE){
             playerCorrectFlags--;
         }
-        /*
-        if(gameState != GameState.UNDEFINED){
-            notifyGameState();
-        }*/
-        System.out.println("GameState = " + gameState);
-
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
+
 
     public void toggleFlagStatus(int column, int row){
         Box box = playerBoard.getBoxAt(column, row);
@@ -134,5 +135,6 @@ public class GameManager {
                 calculateGameState(column, row, true);
                 break;
         }
+        playerBoard.printBoard();
     }
 }
