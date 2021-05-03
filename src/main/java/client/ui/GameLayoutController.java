@@ -30,7 +30,7 @@ public class GameLayoutController {
 
 
     public void setMatchReady(MouseEvent mouseEvent) {
-        gameManager = new GameManager(10, 8, 5);
+        gameManager = new GameManager(10, 10, 20);
         gameManager.setMatchReady();
 
         playerBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
@@ -97,7 +97,7 @@ public class GameLayoutController {
                         String value = box.getValue().getValue()+"";
                         gameBoxButton.setText(value);
                         gameBoxButton.getStyleClass().remove("flagged");
-                        gameBoxButton.getStyleClass().add(value+"-value");
+                        gameBoxButton.getStyleClass().add("value-"+value);
                         gameBoxButton.setDisable(true);
                         break;
                     case HIDDEN:
