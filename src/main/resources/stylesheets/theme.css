@@ -19,6 +19,8 @@ F   verde-claro #98ee99
 
 */
 
+
+
 .button{
     -fx-border-color: none;
     -fx-border-width: 2px;
@@ -26,6 +28,17 @@ F   verde-claro #98ee99
     -fx-border-radius: 12px;
     -fx-background-color: #b9b8b8;
     -fx-font-size: 1.5em;
+    -fx-background-size: 1.5em;
+}
+
+.large-text{
+    -fx-font-size: 2em;
+    -fx-background-size: 2em;
+}
+
+.small-text{
+    -fx-font-size: 1em;
+    -fx-background-size: 1em;
 }
 
 .game-box{
@@ -54,9 +67,15 @@ F   verde-claro #98ee99
 .flagged{
     -fx-border-color: none;
     -fx-background-color: #98ee99;
+    -fx-background-image: url('../icons/flag.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 
 .value-x:disabled{
+    -fx-background-image: url('../icons/mine.png');
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
     -fx-border-color: none;
     -fx-background-color: #ef5350;
 }

@@ -10,8 +10,6 @@ import model.board.Board;
 import model.board.Box;
 import model.board.BoxValue;
 
-import java.util.Arrays;
-
 public class GameLayoutController {
 
 
@@ -78,7 +76,7 @@ public class GameLayoutController {
         handleBoxClicked(mouseEvent);
     }
 
-    public void updateAllBoxText(){
+    public void updateAllBoxTextCSSClasses(){
         Board playerBoard = gameManager.getPlayerBoard();
 
         for (int rowIndex = 0; rowIndex < playerBoard.getRows(); rowIndex++) {
@@ -90,15 +88,18 @@ public class GameLayoutController {
 
                 switch (box.getStatus()){
                     case FLAGGED:
-                        gameBoxButton.setText("F");
                         gameBoxButton.getStyleClass().add("flagged");
                         break;
                     case VISIBLE:
                         String value = box.getValue().getValue()+"";
-                        gameBoxButton.setText(value);
+
                         gameBoxButton.getStyleClass().remove("flagged");
                         gameBoxButton.getStyleClass().add("value-"+value);
                         gameBoxButton.setDisable(true);
+
+                        if (!value.equals(BoxValue.MINE.getValue())){
+                            gameBoxButton.setText(value);
+                        }
                         break;
                     case HIDDEN:
                         gameBoxButton.setText("");
@@ -127,7 +128,7 @@ public class GameLayoutController {
             gameManager.toggleFlagStatus(boxColumn, boxRow);
 
         }
-        updateAllBoxText();
+        updateAllBoxTextCSSClasses();
 
     }
 
