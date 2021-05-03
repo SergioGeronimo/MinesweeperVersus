@@ -91,7 +91,7 @@ public class GameManager {
         }catch (ArrayIndexOutOfBoundsException ignored){
 
         }
-        playerBoard.printBoard();
+
         calculateGameState(column, row, false);
 
     }
@@ -135,6 +135,5 @@ public class GameManager {
                 calculateGameState(column, row, true);
                 break;
         }
-        playerBoard.printBoard();
     }
 }

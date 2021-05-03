@@ -1,0 +1,61 @@
+/*
+Dado que la version de CSS no admite variables, aqui esta cada color usado y su uso para cada valor
+
+
+NA  Negro:      #030202     light   #2e2d2d     dark    #000000
+NA  Blanco:     #f8f8f8     light   #ffffff     dark    #c5c5c5
+8   Rojo:       #E02C47
+7   cafe:       #A84621
+6   cyan:       #40E2E2
+5   rosa:       #E4749D
+4   morado:     #9C1DE7
+3   amarillo:   #EB9F35
+2   Verde:      #09996C
+1   azul:       #3891A6
+
+*/
+
+
+
+.game-box{
+    -fx-border-color: #c5c5c5;
+    -fx-border-radius: 8px;
+    -fx-background-color: #c5c5c5;
+    -fx-max-width: Infinity;
+    -fx-max-height: Infinity;
+}
+
+.game-box:disabled{
+    -fx-opacity: 1.0;
+    -fx-border-color: #c5c5c5;
+    -fx-border-radius: 8px;
+    -fx-background-color: #f8f8f8;
+}
+
+.x-value{
+    -fx-border-radius: 8px;
+}
+
+.x-value:disabled{
+    -fx-border-color: #030202;
+    -fx-border-radius: 8px;
+    -fx-background-color: #030202;
+    -fx-text-fill: #E02C47;
+}
+
+
+.main-container{
+    -fx-background-color: #f8f8f8;
+    -fx-hgap: 16px;
+
+}
+
+.game-menu{
+    -fx-background-color: #c5c5c5;
+}
+
+.board-container{
+
+    -fx-hgap: 2px;
+    -fx-vgap: 2px;
+}

@@ -12,7 +12,7 @@ public class Initializer extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/gameLayout.fxml"));
         stage.setTitle("Minesweeper versus");
-        stage.setScene(new Scene(root, 1024, 576));
+        stage.setScene(new Scene(root, 1280, 720));
         stage.show();
     }
 

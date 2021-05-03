@@ -37,21 +37,17 @@ public class GameLayoutController {
         rivalBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
 
         fillGridPaneWithButtons(
-                gameManager.getColumns(),
-                gameManager.getRows(),
                 playerBoardContainer,
                 playerBoxButtons,
                 false);
 
         fillGridPaneWithButtons(
-                gameManager.getColumns(),
-                gameManager.getRows(),
                 rivalBoardContainer,
                 rivalBoxButtons,
-                false);
+                true);
 
 
-        //se remueve el listener, bugfix 1: el tablero se reinicia cada vez que se hace clic
+        //se remueve el EventHandler, bugfix 1: el tablero se reinicia cada vez que se hace clic
         ((GridPane) mouseEvent.getSource()).setOnMouseClicked(null);
     }
 
@@ -70,8 +66,10 @@ public class GameLayoutController {
         for (int rowIndex = 0; rowIndex < playerBoxButtons.length; rowIndex++) {
             for (int colIndex = 0; colIndex < playerBoxButtons[0].length; colIndex++) {
 
-                playerBoxButtons[rowIndex][colIndex].setBox(gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex));
-                playerBoxButtons[rowIndex][colIndex].setOnMouseClicked(this::handleBoxClicked);
+                playerBoxButtons[rowIndex][colIndex]
+                        .setBox(gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex));
+                playerBoxButtons[rowIndex][colIndex]
+                        .setOnMouseClicked(this::handleBoxClicked);
 
 
             }
@@ -93,9 +91,14 @@ public class GameLayoutController {
                 switch (box.getStatus()){
                     case FLAGGED:
                         gameBoxButton.setText("F");
+                        gameBoxButton.getStyleClass().add("flagged");
                         break;
                     case VISIBLE:
-                        gameBoxButton.setText(box.getValue().getValue()+"");
+                        String value = box.getValue().getValue()+"";
+                        gameBoxButton.setText(value);
+                        gameBoxButton.getStyleClass().remove("flagged");
+                        gameBoxButton.getStyleClass().add(value+"-value");
+                        gameBoxButton.setDisable(true);
                         break;
                     case HIDDEN:
                         gameBoxButton.setText("");
@@ -124,40 +127,56 @@ public class GameLayoutController {
             gameManager.toggleFlagStatus(boxColumn, boxRow);
 
         }
-
         updateAllBoxText();
 
     }
 
 
-    public void fillGridPaneWithButtons(int columns, int rows, GridPane boardContainer, GameBoxButton[][] boxButtonsArray, boolean isDisabled){
+    public void fillGridPaneWithButtons(GridPane boardContainer, GameBoxButton[][] boxButtonsArray, boolean isDisabled){
 
         boardContainer.getChildren().clear();
-        boardContainer.setGridLinesVisible(true);
+        int columns = gameManager.getColumns();
+        int rows = gameManager.getRows();
 
 
         ObservableList<ColumnConstraints> containerColumnConstraints = boardContainer.getColumnConstraints();
+
         containerColumnConstraints.clear();
         for (int colCount = 0; colCount < columns; colCount++) {
             ColumnConstraints columnConstraints = new ColumnConstraints();
             columnConstraints.setHgrow(Priority.ALWAYS);
+
+
+            if(boardContainer.getWidth() > boardContainer.getHeight())
+                columnConstraints.setPercentWidth(1.0/rows * 100);
+            else
+                columnConstraints.setPercentWidth( 1.0/columns * 100);
+
+
             containerColumnConstraints.add(columnConstraints);
 
         }
+
 
         ObservableList<RowConstraints> containerRowConstraints = boardContainer.getRowConstraints();
         containerRowConstraints.clear();
         for (int rowCount = 0; rowCount < rows; rowCount++) {
             RowConstraints rowConstraints = new RowConstraints();
             rowConstraints.setVgrow(Priority.ALWAYS);
+            rowConstraints.setPercentHeight(1.0/rows * 100);
             containerRowConstraints.add(rowConstraints);
 
         }
+
 
         for (int rowCount = 0; rowCount < rows; rowCount++) {
             for (int colCount = 0; colCount < columns; colCount++) {
 
                 GameBoxButton boxButton = new GameBoxButton(colCount, rowCount);
+                boxButton
+                        .getStyleClass()
+                        .add("game-box");
+
                 boxButtonsArray[rowCount][colCount] = boxButton;
 
                 if (isDisabled){
