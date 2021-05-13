@@ -157,7 +157,7 @@ public class GameController {
             }
 
             Thread.sleep(10);
-        }while (keepRunning);
+        }while (true);
 
 
     }

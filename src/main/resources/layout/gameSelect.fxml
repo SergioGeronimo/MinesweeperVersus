@@ -32,11 +32,11 @@
             onMouseClicked="#setEasyGame"/>
     <Button
             GridPane.rowIndex="2"
-            text="easy"
+            text="normal"
             onMouseClicked="#setNormalGame"/>
     <Button
             GridPane.rowIndex="3"
-            text="easy"
+            text="hard"
             onMouseClicked="#setHardGame"/>
 
 </GridPane>

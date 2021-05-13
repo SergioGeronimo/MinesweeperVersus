@@ -29,9 +29,8 @@ public class GameSelectController {
 
     public void setEasyGame(MouseEvent mouseEvent) {
         gameManager.setDifficulty(MatchDifficulty.EASY);
-        if(gameManager.isMatchReady()) {
-            toGameScene();
-        }
+
+        toGameScene();
     }
 
     public void setNormalGame(MouseEvent mouseEvent) {
