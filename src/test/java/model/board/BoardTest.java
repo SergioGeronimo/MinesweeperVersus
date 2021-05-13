@@ -1,5 +1,9 @@
 package model.board;
 
+import client.model.Board;
+import client.model.Box;
+import client.model.BoxStatus;
+import client.model.BoxValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

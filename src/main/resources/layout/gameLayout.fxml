@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -8,31 +7,31 @@
         alignment="BASELINE_CENTER"
         prefWidth="1280.0"
         prefHeight="720.0"
-        stylesheets="stylesheets/theme.css"
+        stylesheets="/stylesheets/theme.css"
         styleClass="main-container"
         xmlns="http://javafx.com/javafx/11.0.1"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="client.ui.GameLayoutController">
 
     <columnConstraints>
-        <ColumnConstraints percentWidth="5"/>
-        <ColumnConstraints percentWidth="10"/>
-        <ColumnConstraints percentWidth="20"/>
-        <ColumnConstraints percentWidth="10"/>
-        <ColumnConstraints percentWidth="5"/>
-        <ColumnConstraints percentWidth="5"/>
-        <ColumnConstraints percentWidth="10"/>
-        <ColumnConstraints percentWidth="20"/>
-        <ColumnConstraints percentWidth="10"/>
-        <ColumnConstraints percentWidth="5"/>
+        <ColumnConstraints percentWidth="4"/>
+        <ColumnConstraints percentWidth="14"/>
+        <ColumnConstraints percentWidth="14"/>
+        <ColumnConstraints percentWidth="14"/>
+        <ColumnConstraints percentWidth="4"/>
+        <ColumnConstraints percentWidth="4"/>
+        <ColumnConstraints percentWidth="14"/>
+        <ColumnConstraints percentWidth="14"/>
+        <ColumnConstraints percentWidth="14"/>
+        <ColumnConstraints percentWidth="4"/>
     </columnConstraints>
 
     <rowConstraints>
-        <RowConstraints percentHeight="10" vgrow="NEVER" />
-        <RowConstraints percentHeight="5" vgrow="NEVER" />
-        <RowConstraints percentHeight="10" vgrow="NEVER" />
-        <RowConstraints percentHeight="70" vgrow="NEVER" />
-        <RowConstraints percentHeight="5" vgrow="NEVER" />
+        <RowConstraints prefHeight="48" vgrow="NEVER" />
+        <RowConstraints prefHeight="24" vgrow="NEVER" />
+        <RowConstraints prefHeight="48" vgrow="NEVER" />
+        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints prefHeight="24" vgrow="NEVER" />
     </rowConstraints>
 
     <!-- game menu -->

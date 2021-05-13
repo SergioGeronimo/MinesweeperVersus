@@ -1,4 +1,4 @@
-package model.board;
+package client.model;
 
 public enum BoxStatus{
     HIDDEN,

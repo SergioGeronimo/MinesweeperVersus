@@ -1,8 +1,8 @@
-package client.ui;
+package client.ui.control;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import model.board.Box;
+import client.model.Box;
 
 public class GameBoxButton extends Button {
     private int column, row;

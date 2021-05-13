@@ -1,34 +1,48 @@
 package client.ui;
 
 import client.game.GameManager;
+import client.game.GameState;
+import client.ui.control.GameBoxButton;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import model.board.Board;
-import model.board.Box;
-import model.board.BoxValue;
+import client.model.Board;
+import client.model.Box;
+import client.model.BoxValue;
 
-public class GameLayoutController {
+import java.util.Timer;
+
+public class GameLayoutController{
 
 
     @FXML
     private GridPane rivalBoardContainer;
     @FXML
-    private GridPane rivalMatchStats;
-    @FXML
     private GridPane playerBoardContainer;
-    @FXML
-    private GridPane playerMatchStats;
 
     private GameBoxButton[][] playerBoxButtons, rivalBoxButtons;
 
     GameManager gameManager;
 
-
-    public void setMatchReady(MouseEvent mouseEvent) {
+    @FXML
+    public void initialize(){
         gameManager = new GameManager(10, 10, 20);
+    }
+
+    /*
+    * llama al GameManager para iniciar partida,
+    * prepara el gridpane llenando cada casilla con botones
+    * si el gridpane es del rival, se desabilita.
+    *
+    * */
+    public void setMatchReady(MouseEvent mouseEvent) {
+
         gameManager.setMatchReady();
 
         playerBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
@@ -50,10 +64,10 @@ public class GameLayoutController {
     }
 
     /*
-     * Se notifica al GameManager la casilla a empezar partida
-     * todos los bottones cambian de listener para empezar partida
-     * a listener para descubrir/abanderar casillas
-     */
+    * Se notifica al GameManager la casilla a empezar partida
+    * todos los bottones cambian de listener para empezar partida
+    * a listener para descubrir/abanderar casillas
+    */
     public void startMatch(MouseEvent mouseEvent){
         GameBoxButton source = (GameBoxButton) mouseEvent.getSource();
 
@@ -74,50 +88,94 @@ public class GameLayoutController {
         }
 
         handleBoxClicked(mouseEvent);
+
+
+        Task<Void> voidTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                updateAllBoxTextCSSClasses();
+                return null;
+            }
+        };
+
+        new Thread(voidTask).start();
+
     }
 
-    public void updateAllBoxTextCSSClasses(){
+    /*
+    * Actualiza la clase CSS de cada boton y su texto segun el valor,
+    * este metodo se debe correr en hilo
+    *
+    * si el boton es una bandera se marca como flagged
+    * si tiene un valor 0 a 8 se le pone como clase value-[valor]
+    * ej: valor 4, clase CSS = value-4
+    * si es mina no se le pone el texto al boton aun tiene clase value-x
+    * ej valor x (es decir es mina), clase CSS = value-x
+    *
+    * las casillas escondidas no son actualizadas
+    * */
+    public void updateAllBoxTextCSSClasses() throws InterruptedException {
+        boolean keepRunning = true;
+
         Board playerBoard = gameManager.getPlayerBoard();
 
-        for (int rowIndex = 0; rowIndex < playerBoard.getRows(); rowIndex++) {
-            for (int colIndex = 0; colIndex < playerBoard.getColumns(); colIndex++) {
+        while (keepRunning ) {
+
+            for (int rowIndex = 0; rowIndex < playerBoard.getRows(); rowIndex++) {
+                for (int colIndex = 0; colIndex < playerBoard.getColumns(); colIndex++) {
 
 
-                Box box = gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex);
-                GameBoxButton gameBoxButton = playerBoxButtons[rowIndex][colIndex];
+                    Box box = gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex);
+                    GameBoxButton gameBoxButton = playerBoxButtons[rowIndex][colIndex];
 
-                switch (box.getStatus()){
-                    case FLAGGED:
-                        //bugfix ui_1: busca si la casilla ya tenia la clase asi no tiene la clase dos veces
-                        if(!gameBoxButton.getStyleClass().contains("flagged"))
-                            gameBoxButton.getStyleClass().add("flagged");
-                        break;
-                    case VISIBLE:
-                        String value = box.getValue().getValue();
 
-                        gameBoxButton.getStyleClass().remove("flagged");
-                        gameBoxButton.getStyleClass().add("value-"+value);
-                        gameBoxButton.setDisable(true);
+                        switch (box.getStatus()) {
+                            case FLAGGED:
+                                //bugfix ui_1: busca si la casilla ya tenia la clase asi no tiene la clase dos veces
+                                if (!gameBoxButton.getStyleClass().contains("flagged"))
+                                    gameBoxButton.getStyleClass().add("flagged");
+                                break;
+                            case VISIBLE:
+                                String value = box.getValue().getValue();
 
-                        if (!value.equals(BoxValue.MINE.getValue())){
-                            gameBoxButton.setText(value);
+                                gameBoxButton.getStyleClass().remove("flagged");
+                                gameBoxButton.getStyleClass().add("value-" + value);
+                                gameBoxButton.setDisable(true);
+
+                                if (!value.equals(BoxValue.MINE.getValue())) {
+                                    //cambios directos en ui dentro de un hilo
+                                    // se deben ejecutar con Platform.runLater()
+                                    Platform.runLater( () -> {
+                                        gameBoxButton.setText(value);
+                                    });
+
+                                }else {
+                                    //cuando se pinta una mina se deja de actualizar los tableros
+                                    keepRunning = false;
+                                }
+                                break;
+                            case HIDDEN:
+                                //bugfix ui_1: elimina las banderas
+                                gameBoxButton.getStyleClass().remove("flagged");
+                                gameBoxButton.setText("");
+                                break;
+
                         }
-                        break;
-                    case HIDDEN:
-                        //bugfix ui_1: elimina las banderas
-                        gameBoxButton.getStyleClass().remove("flagged");
-                        gameBoxButton.setText("");
-                        break;
 
                 }
-
-
             }
+
+            Thread.sleep(10);
         }
+
 
     }
 
-
+    /*
+    * Decide que hacer hacer con clic primario o secundario,
+    * si es primario se revela el valor
+    * si es secundario se alterna su estado de bandera
+    * */
 
     public void handleBoxClicked(MouseEvent mouseEvent){
         GameBoxButton boxButtonSource = (GameBoxButton) mouseEvent.getSource();
@@ -132,11 +190,17 @@ public class GameLayoutController {
             gameManager.toggleFlagStatus(boxColumn, boxRow);
 
         }
-        updateAllBoxTextCSSClasses();
+
 
     }
 
-
+    /*
+    * Del gridpane seleccionado crea las columnas y renglones indicados
+    * de forma que son uniformes al tamaño dsiponible y responsivos
+    * los llena de botones con informacion de su ubicacion (columna, renglon)
+    *
+    * los botones son hijos de la clase javafx.controls.Button
+    * */
     public void fillGridPaneWithButtons(GridPane boardContainer, GameBoxButton[][] boxButtonsArray, boolean isDisabled){
 
         boardContainer.getChildren().clear();
@@ -196,5 +260,13 @@ public class GameLayoutController {
             }
         }
 
+    }
+
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
+    public void setGameManager(GameManager gameManager) {
+        this.gameManager = gameManager;
     }
 }

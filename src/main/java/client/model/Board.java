@@ -1,5 +1,6 @@
-package model.board;
+package client.model;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /*
@@ -7,7 +8,7 @@ import java.util.Random;
     marca como VISIBLE las casillas con valor 0 y sus vecinos con valor 0, se detiene hasta encontrar otros valores
  */
 
-public class Board {
+public class Board implements Serializable {
     private int columns;
     private int rows;
     private int mines;
@@ -99,12 +100,16 @@ public class Board {
 
         for (int columnIndex = 0; columnIndex < grid.length; columnIndex++) {
             for(int rowIndex = 0; rowIndex < grid[columnIndex].length; rowIndex++){
+                Box currentBox = new Box(columnIndex, rowIndex);
+
                 if(minesLocation[mineIndex]){
-                    grid[columnIndex][rowIndex] = new Box(BoxValue.MINE);
+                    currentBox.setValue(BoxValue.MINE);
                 }
                 else{
-                    grid[columnIndex][rowIndex] = new Box(BoxValue.NONE_NEAR);
+                    currentBox.setValue(BoxValue.NONE_NEAR);
                 }
+
+                grid[columnIndex][rowIndex] = currentBox;
                 mineIndex++;
 
             }
