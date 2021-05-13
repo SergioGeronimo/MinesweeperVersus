@@ -24,9 +24,7 @@ public class GameSelectController {
 
     public void setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
-        while(!gameManager.isMatchReady()) {
-            toGameScene();
-        }
+
     }
 
     public void setEasyGame(MouseEvent mouseEvent) {
@@ -52,7 +50,7 @@ public class GameSelectController {
     //Cambia escena del lobby al juego, pasa toda
     //la infromacion necesario al siguiente controlador
     public void toGameScene(){
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/gameSelect.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/game.fxml"));
         gameManager.setMatchReady();
 
         try {
@@ -70,7 +68,10 @@ public class GameSelectController {
 
     public void updateLabels() {
         nickname.setText(gameManager.getPlayer().getNickname());
-        scene = nickname.getScene();
+    }
 
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
     }
 }

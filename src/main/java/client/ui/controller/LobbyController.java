@@ -65,8 +65,9 @@ public class LobbyController {
 
             GameSelectController controller = (GameSelectController) fxmlLoader.getController();
             controller.setGameManager(gameManager);
-            controller.updateLabels();
+            controller.setScene(scene);
             scene.setRoot(root);
+            controller.updateLabels();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
