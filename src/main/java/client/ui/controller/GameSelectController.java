@@ -8,19 +8,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
 public class GameSelectController {
-
+    @FXML
+    private GridPane mainContainer;
     Scene scene;
     @FXML
     private Label nickname;
     private GameManager gameManager;
 
-    public GameManager getGameManager() {
-        return gameManager;
-    }
 
     public void setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -59,6 +58,8 @@ public class GameSelectController {
             gameController.setMatchReady();
             gameController.updateLabels();
             scene.setRoot(root);
+            scene.getWindow().sizeToScene();
+            scene.getWindow().centerOnScreen();
 
         } catch (IOException ioException) {
             ioException.printStackTrace();

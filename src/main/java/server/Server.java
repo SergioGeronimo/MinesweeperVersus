@@ -82,6 +82,7 @@ public class Server extends UnicastRemoteObject implements ServerRemote {
             matchHashtable.get(id.get()).setPlayerA(player);
         }
 
+        System.err.println("User [" + player.getNickname() + "] in game #" + id.get());
         return id.get();
     }
 

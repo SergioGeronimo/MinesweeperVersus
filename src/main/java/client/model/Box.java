@@ -21,7 +21,7 @@ public class Box implements Serializable {
     public Box(int column, int row) {
         this.column = column;
         this.row = row;
-        this.status = BoxStatus.VISIBLE;
+        this.status = BoxStatus.HIDDEN;
     }
 
     public int getColumn() {

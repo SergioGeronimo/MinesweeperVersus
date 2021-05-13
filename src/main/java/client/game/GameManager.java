@@ -258,7 +258,7 @@ public class GameManager implements Runnable{
             case EASY:
                 this.mines = 10;
                 this.columns = 10;
-                this.rows = 8;
+                this.rows = 10;
                 break;
             case NORMAL:
                 this.mines = 40;

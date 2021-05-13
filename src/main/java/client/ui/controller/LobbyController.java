@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -17,6 +18,11 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 public class LobbyController {
+
+
+    private Scene scene;
+    @FXML
+    private GridPane mainContainer;
     @FXML
     private TextField nickname;
     Player player;
@@ -24,7 +30,7 @@ public class LobbyController {
 
     @FXML
     public void initialize(){
-        gameManager = new GameManager(10,10,10);
+        gameManager = new GameManager();
     }
 
     /*

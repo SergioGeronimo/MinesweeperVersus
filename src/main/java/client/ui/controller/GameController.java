@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -16,6 +17,12 @@ import client.model.BoxValue;
 
 public class GameController {
 
+    private Scene scene;
+
+    @FXML
+    private GridPane mainContainer;
+    @FXML
+    private Label playerLabel;
     @FXML
     private Label rivalLabel;
     @FXML
@@ -26,6 +33,18 @@ public class GameController {
     private GameBoxButton[][] playerBoxButtons, rivalBoxButtons;
 
     GameManager gameManager;
+
+    public void startUIUpdateThread(){
+        Task<Void> voidTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                updateUI();
+                return null;
+            }
+        };
+
+        new Thread(voidTask).start();
+    }
 
     /*
     * llama al GameManager para iniciar partida,
@@ -80,7 +99,7 @@ public class GameController {
         Task<Void> voidTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                updateAllBoxTextCSSClasses();
+                updateUI();
                 return null;
             }
         };
@@ -101,7 +120,7 @@ public class GameController {
     *
     * las casillas escondidas no son actualizadas
     * */
-    public void updateAllBoxTextCSSClasses() throws InterruptedException {
+    public void updateUI() throws InterruptedException {
         boolean keepRunning = true;
 
         Board playerBoard = gameManager.getPlayerBoard();
@@ -109,6 +128,13 @@ public class GameController {
         GameBoxButton[][][] allButtons = {playerBoxButtons, rivalBoxButtons};
 
         do{
+
+            if(gameManager.getRival() != null) {
+                Platform.runLater(() -> {
+                    rivalLabel.setText(gameManager.getRival().getNickname());
+                });
+            }
+
 
             for (int boardIndex = 0; boardIndex < allBoards.length; boardIndex++) {
                 for (int rowIndex = 0; rowIndex < gameManager.getRows(); rowIndex++) {
@@ -155,8 +181,9 @@ public class GameController {
                     }
                 }
             }
+            System.out.println("UIUpdate still running");
 
-            Thread.sleep(10);
+            Thread.sleep(100);
         }while (true);
 
 
@@ -263,5 +290,6 @@ public class GameController {
 
     public void updateLabels() {
         rivalLabel.setText(gameManager.getRival().getNickname());
+        playerLabel.setText(gameManager.getPlayer().getNickname());
     }
 }

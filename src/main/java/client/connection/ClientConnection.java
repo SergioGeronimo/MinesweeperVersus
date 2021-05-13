@@ -13,11 +13,18 @@ import java.rmi.RemoteException;
 
 public class ClientConnection {
     private static ServerRemote LOOK_UP;
+    private static final String SERVER_NAME = "//192.168.0.4:4444/MinesweeperServer";
 
     public static boolean connectToServer() throws
             MalformedURLException, RemoteException, NotBoundException {
-        LOOK_UP = (ServerRemote) Naming.lookup("//192.168.0.4:4444/MinesweeperServer");
+        LOOK_UP = (ServerRemote) Naming.lookup(SERVER_NAME);
         return LOOK_UP != null;
+
+
+    }
+
+    public static void disconnect() throws MalformedURLException, RemoteException, NotBoundException{
+        Naming.unbind(SERVER_NAME);
     }
 
     public static boolean addClient(Player player) {
