@@ -22,7 +22,9 @@ public class GameManager implements Runnable{
     private int playerCorrectFlags = 0;
     private GameState gameState = GameState.UNDEFINED;
 
-
+    public GameManager(){
+        updateInfoThread = new Thread(this);
+    }
 
     public GameManager(int columns, int rows, int mines) {
         this.columns = columns;
@@ -228,12 +230,12 @@ public class GameManager implements Runnable{
 
             try {
                 Box lastBox = ClientConnection.getRivalBox(matchID, isPlayerA);
-                rivalBoard.setVisibleEmptyNeighbours(lastBox.getColumn(), lastBox.getRow());
+                if(lastBox != null) {
+                    rivalBoard.setVisibleEmptyNeighbours(lastBox.getColumn(), lastBox.getRow());
+                }
 
             } catch (RemoteException e) {
                 e.printStackTrace();
-            } catch (NullPointerException ignored){
-
             }
 
             try {
@@ -249,5 +251,29 @@ public class GameManager implements Runnable{
             }
         }
 
+    }
+
+    public void setDifficulty(MatchDifficulty matchDifficulty) {
+        switch (matchDifficulty){
+            case EASY:
+                this.mines = 10;
+                this.columns = 10;
+                this.rows = 8;
+                break;
+            case NORMAL:
+                this.mines = 40;
+                this.columns = 15;
+                this.rows = 15;
+                break;
+            case HARD:
+                this.mines = 99;
+                this.columns = 30;
+                this.rows = 16;
+                break;
+        }
+    }
+
+    public boolean isMatchReady() {
+        return (rival != null && rivalBoard != null);
     }
 }

@@ -66,8 +66,6 @@
     <GridPane
             fx:id="playerBoardContainer"
             styleClass="board-container"
-            onMouseClicked="#setMatchReady"
-
             GridPane.columnIndex="1"
             GridPane.rowIndex="3"
             GridPane.columnSpan="3">
@@ -81,7 +79,7 @@
         </rowConstraints>
         <Label
                 GridPane.halignment="CENTER"
-                text="Click here to start"/>
+                text="Gridpane del jugador"/>
     </GridPane>
 
     <!-- rival match stats -->
@@ -92,6 +90,7 @@
             GridPane.halignment="CENTER"/>
     <Label
             text="Rival"
+            fx:id="rivalLabel"
             GridPane.columnIndex="7"
             GridPane.rowIndex="2"
             GridPane.halignment="CENTER" />

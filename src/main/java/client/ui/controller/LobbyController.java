@@ -49,23 +49,23 @@ public class LobbyController {
         }
 
         if(connectionSuccess){
-            changeSceneToGame(scene);
+            changeSceneToSelect(scene);
         }
 
     }
 
-    //Cambia escena del lobby al juego, pasa toda
+    //Cambia escena del lobby a la seleccion de juego, pasa toda
     //la infromacion necesario al siguiente controlador
-    public void changeSceneToGame(Scene scene){
+    public void changeSceneToSelect(Scene scene){
         Parent root = null;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/game.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/gameSelect.fxml"));
 
         try {
             root = fxmlLoader.load();
 
-            GameController controller = (GameController) fxmlLoader.getController();
+            GameSelectController controller = (GameSelectController) fxmlLoader.getController();
             controller.setGameManager(gameManager);
-
+            controller.updateLabels();
             scene.setRoot(root);
         } catch (IOException ioException) {
             ioException.printStackTrace();

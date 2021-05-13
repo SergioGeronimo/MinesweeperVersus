@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -15,7 +16,8 @@ import client.model.BoxValue;
 
 public class GameController {
 
-
+    @FXML
+    private Label rivalLabel;
     @FXML
     private GridPane rivalBoardContainer;
     @FXML
@@ -31,8 +33,7 @@ public class GameController {
     * si el gridpane es del rival, se desabilita.
     *
     * */
-    public void setMatchReady(MouseEvent mouseEvent) {
-        gameManager.setMatchReady();
+    public void setMatchReady() {
 
         playerBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
         rivalBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
@@ -47,9 +48,6 @@ public class GameController {
                 rivalBoxButtons,
                 true);
 
-
-        //se remueve el EventHandler, bugfix 1: el tablero se reinicia cada vez que se hace clic
-        ((GridPane) mouseEvent.getSource()).setOnMouseClicked(null);
     }
 
     /*
@@ -261,5 +259,9 @@ public class GameController {
 
     public void setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
+    }
+
+    public void updateLabels() {
+        rivalLabel.setText(gameManager.getRival().getNickname());
     }
 }

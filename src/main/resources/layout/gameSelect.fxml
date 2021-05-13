@@ -6,9 +6,37 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<GridPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="layout.GameSelect"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:controller="client.ui.controller.GameSelectController"
+            prefHeight="720.0" prefWidth="1280.0">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="100"/>
+    </columnConstraints>
 
-</AnchorPane>
+    <rowConstraints>
+        <RowConstraints percentHeight="25"/>
+        <RowConstraints percentHeight="25"/>
+        <RowConstraints percentHeight="25"/>
+        <RowConstraints percentHeight="25"/>
+    </rowConstraints>
+
+    <Label
+            GridPane.rowIndex="0"
+            text="nickname"
+           fx:id="nickname"/>
+
+    <Button
+            GridPane.rowIndex="1"
+            text="easy"
+            onMouseClicked="#setEasyGame"/>
+    <Button
+            GridPane.rowIndex="2"
+            text="easy"
+            onMouseClicked="#setNormalGame"/>
+    <Button
+            GridPane.rowIndex="3"
+            text="easy"
+            onMouseClicked="#setHardGame"/>
+
+</GridPane>
