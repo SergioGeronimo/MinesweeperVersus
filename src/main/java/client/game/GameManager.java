@@ -2,6 +2,7 @@ package client.game;
 
 import client.connection.ClientConnection;
 import client.model.*;
+import javafx.concurrent.Task;
 
 import java.rmi.RemoteException;
 
@@ -12,7 +13,7 @@ public class GameManager implements Runnable{
     *
     *
     * */
-
+    Thread updateInfoThread;
     Player player, rival;
     private boolean isPlayerA;
     private int matchID;
@@ -27,6 +28,8 @@ public class GameManager implements Runnable{
         this.columns = columns;
         this.rows = rows;
         this.mines = mines;
+
+        updateInfoThread = new Thread(this);
     }
 
     public Player getPlayer() {
@@ -111,6 +114,7 @@ public class GameManager implements Runnable{
 
 
     public void setMatchReady() {
+        updateInfoThread.start();
         playerBoard = new Board(columns,rows,mines);
         playerBoard.generateEmptyGrid();
         try {
@@ -228,11 +232,19 @@ public class GameManager implements Runnable{
 
             } catch (RemoteException e) {
                 e.printStackTrace();
+            } catch (NullPointerException ignored){
+
             }
 
             try {
                 this.gameState = ClientConnection.getGameState(matchID);
             } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

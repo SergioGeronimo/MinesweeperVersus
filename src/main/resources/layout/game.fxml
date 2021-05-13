@@ -11,7 +11,7 @@
         styleClass="main-container"
         xmlns="http://javafx.com/javafx/11.0.1"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="client.ui.GameLayoutController">
+        fx:controller="client.ui.controller.GameController">
 
     <columnConstraints>
         <ColumnConstraints percentWidth="4"/>

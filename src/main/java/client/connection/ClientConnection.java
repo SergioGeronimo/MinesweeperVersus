@@ -16,7 +16,7 @@ public class ClientConnection {
 
     public static boolean connectToServer() throws
             MalformedURLException, RemoteException, NotBoundException {
-        LOOK_UP = (ServerRemote) Naming.lookup("//localhost:4444/MinesweeperServer");
+        LOOK_UP = (ServerRemote) Naming.lookup("//192.168.0.4:4444/MinesweeperServer");
         return LOOK_UP != null;
     }
 
@@ -43,6 +43,7 @@ public class ClientConnection {
     }
 
     public static void sendBox(int matchID, boolean isPlayerA, Box box) throws RemoteException {
+        System.err.println(box.getColumn() +", " + box.getRow() +", " + box.getValue().toString() +", "+box.getStatus().toString());
         LOOK_UP.sendBox(matchID, isPlayerA, box);
     }
 

@@ -1,4 +1,4 @@
-package client.ui.control;
+package client.ui.customcontrol;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;

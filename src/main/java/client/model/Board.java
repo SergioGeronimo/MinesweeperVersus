@@ -49,13 +49,6 @@ public class Board implements Serializable {
         this.grid = grid;
     }
 
-    public int getFlaggedMines() {
-        return flaggedMines;
-    }
-
-    public void setFlaggedMines(int flaggedMines) {
-        this.flaggedMines = flaggedMines;
-    }
 
     public Box getBoxAt(int columnIndex, int rowIndex) throws ArrayIndexOutOfBoundsException{
         return grid[rowIndex][columnIndex];
@@ -109,7 +102,7 @@ public class Board implements Serializable {
                     currentBox.setValue(BoxValue.NONE_NEAR);
                 }
 
-                grid[columnIndex][rowIndex] = currentBox;
+                grid[rowIndex][columnIndex] = currentBox;
                 mineIndex++;
 
             }
@@ -128,12 +121,12 @@ public class Board implements Serializable {
             for(int rowIndex = 0; rowIndex < grid[columnIndex].length; rowIndex++){
                 int minesNear = 0;
 
-                if(grid[columnIndex][rowIndex].getValue() != BoxValue.MINE) {
+                if(grid[rowIndex][columnIndex].getValue() != BoxValue.MINE) {
 
                     for (short columnOffset = -1; columnOffset < 2; columnOffset++) {
                         for (short rowOffset = -1; rowOffset < 2; rowOffset++) {
                             try {
-                                if (grid[columnIndex + columnOffset][rowIndex + rowOffset].getValue() == BoxValue.MINE) {
+                                if (grid[rowIndex + rowOffset][columnIndex + columnOffset].getValue() == BoxValue.MINE) {
                                     minesNear++;
                                 }
 
@@ -144,28 +137,28 @@ public class Board implements Serializable {
                     }
                     switch (minesNear) {
                         case 1:
-                            grid[columnIndex][rowIndex].setValue(BoxValue.ONE_NEAR);
+                            grid[rowIndex][columnIndex].setValue(BoxValue.ONE_NEAR);
                             break;
                         case 2:
-                            grid[columnIndex][rowIndex].setValue(BoxValue.TWO_NEAR);
+                            grid[rowIndex][columnIndex].setValue(BoxValue.TWO_NEAR);
                             break;
                         case 3:
-                            grid[columnIndex][rowIndex].setValue(BoxValue.THREE_NEAR);
+                            grid[rowIndex][columnIndex].setValue(BoxValue.THREE_NEAR);
                             break;
                         case 4:
-                            grid[columnIndex][rowIndex].setValue(BoxValue.FOUR_NEAR);
+                            grid[rowIndex][columnIndex].setValue(BoxValue.FOUR_NEAR);
                             break;
                         case 5:
-                            grid[columnIndex][rowIndex].setValue(BoxValue.FIVE_NEAR);
+                            grid[rowIndex][columnIndex].setValue(BoxValue.FIVE_NEAR);
                             break;
                         case 6:
-                            grid[columnIndex][rowIndex].setValue(BoxValue.SIX_NEAR);
+                            grid[rowIndex][columnIndex].setValue(BoxValue.SIX_NEAR);
                             break;
                         case 7:
-                            grid[columnIndex][rowIndex].setValue(BoxValue.SEVEN_NEAR);
+                            grid[rowIndex][columnIndex].setValue(BoxValue.SEVEN_NEAR);
                             break;
                         case 8:
-                            grid[columnIndex][rowIndex].setValue(BoxValue.EIGHT_NEAR);
+                            grid[rowIndex][columnIndex].setValue(BoxValue.EIGHT_NEAR);
                             break;
                     }
 

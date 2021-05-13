@@ -1,13 +1,10 @@
-package client.ui;
+package client.ui.controller;
 
 import client.game.GameManager;
-import client.game.GameState;
-import client.ui.control.GameBoxButton;
+import client.ui.customcontrol.GameBoxButton;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -16,9 +13,7 @@ import client.model.Board;
 import client.model.Box;
 import client.model.BoxValue;
 
-import java.util.Timer;
-
-public class GameLayoutController{
+public class GameController {
 
 
     @FXML
@@ -30,11 +25,6 @@ public class GameLayoutController{
 
     GameManager gameManager;
 
-    @FXML
-    public void initialize(){
-        gameManager = new GameManager(10, 10, 20);
-    }
-
     /*
     * llama al GameManager para iniciar partida,
     * prepara el gridpane llenando cada casilla con botones
@@ -42,7 +32,6 @@ public class GameLayoutController{
     *
     * */
     public void setMatchReady(MouseEvent mouseEvent) {
-
         gameManager.setMatchReady();
 
         playerBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
@@ -118,15 +107,18 @@ public class GameLayoutController{
         boolean keepRunning = true;
 
         Board playerBoard = gameManager.getPlayerBoard();
+        Board[] allBoards = {gameManager.getPlayerBoard(), gameManager.getRivalBoard()};
+        GameBoxButton[][][] allButtons = {playerBoxButtons, rivalBoxButtons};
 
-        while (keepRunning ) {
+        do{
 
-            for (int rowIndex = 0; rowIndex < playerBoard.getRows(); rowIndex++) {
-                for (int colIndex = 0; colIndex < playerBoard.getColumns(); colIndex++) {
+            for (int boardIndex = 0; boardIndex < allBoards.length; boardIndex++) {
+                for (int rowIndex = 0; rowIndex < gameManager.getRows(); rowIndex++) {
+                    for (int colIndex = 0; colIndex < gameManager.getColumns(); colIndex++) {
 
 
-                    Box box = gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex);
-                    GameBoxButton gameBoxButton = playerBoxButtons[rowIndex][colIndex];
+                        Box box = allBoards[boardIndex].getBoxAt(colIndex, rowIndex);
+                        GameBoxButton gameBoxButton = allButtons[boardIndex][rowIndex][colIndex];
 
 
                         switch (box.getStatus()) {
@@ -145,11 +137,11 @@ public class GameLayoutController{
                                 if (!value.equals(BoxValue.MINE.getValue())) {
                                     //cambios directos en ui dentro de un hilo
                                     // se deben ejecutar con Platform.runLater()
-                                    Platform.runLater( () -> {
+                                    Platform.runLater(() -> {
                                         gameBoxButton.setText(value);
                                     });
 
-                                }else {
+                                } else {
                                     //cuando se pinta una mina se deja de actualizar los tableros
                                     keepRunning = false;
                                 }
@@ -162,11 +154,12 @@ public class GameLayoutController{
 
                         }
 
+                    }
                 }
             }
 
             Thread.sleep(10);
-        }
+        }while (keepRunning);
 
 
     }

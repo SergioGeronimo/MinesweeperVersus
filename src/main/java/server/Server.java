@@ -135,7 +135,6 @@ public class Server extends UnicastRemoteObject implements ServerRemote {
 
     @Override
     public void sendBox(int matchId, boolean isPlayerA, Box box) throws RemoteException {
-
         Match match = matchHashtable.get(matchId);
         if (isPlayerA){
             match.setLastBoxPlayerA(box);
