@@ -72,6 +72,14 @@ F   verde-claro #98ee99
     -fx-background-position: center;
 }
 
+.flagged:disabled{
+    -fx-border-color: none;
+    -fx-background-color: #98ee99;
+    -fx-background-image: url('../icons/flag.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
 .value-x:disabled{
     -fx-background-image: url('../icons/mine.png');
     -fx-background-position: center;

@@ -58,7 +58,8 @@ public class GameSelectController {
             gameController.setMatchReady();
             gameController.updateLabels();
             scene.setRoot(root);
-            scene.getWindow().sizeToScene();
+            scene.getWindow().setWidth(1280);
+            scene.getWindow().setHeight(720);
             scene.getWindow().centerOnScreen();
 
         } catch (IOException ioException) {

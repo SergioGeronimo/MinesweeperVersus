@@ -181,7 +181,7 @@ public class GameController {
                     }
                 }
             }
-            System.out.println("UIUpdate still running");
+            System.out.println(gameManager.getRival().getNickname());
 
             Thread.sleep(100);
         }while (true);

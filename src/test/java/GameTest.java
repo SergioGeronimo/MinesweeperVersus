@@ -29,6 +29,7 @@ public class GameTest {
             gameManager.setMatchReady();
             gameManager.startMatchAt(4,4);
             gameManager.revealPlayerBoxValue(4,4);
+            gameManager.toggleFlagStatus(5,5);
 
             ClientConnection.sendBoard(gameManager.getMatchID(), isPlayerA, gameManager.getPlayerBoard());
 
