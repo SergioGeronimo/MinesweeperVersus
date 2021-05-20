@@ -7,38 +7,98 @@
 <?import javafx.scene.layout.*?>
 
 <GridPane
-        xmlns="http://javafx.com/javafx"
-        xmlns:fx="http://javafx.com/fxml"
+        xmlns="http://javafx.com/javafx/11.0.1"
+        xmlns:fx="http://javafx.com/fxm/1"
         fx:controller="client.ui.controller.GameSelectController"
+        stylesheets="/stylesheets/theme.css"
+        styleClass="main-container"
         fx:id="mainContainer"
         prefHeight="852.0" prefWidth="480.0">
     <columnConstraints>
-        <ColumnConstraints percentWidth="100"/>
+        <ColumnConstraints percentWidth="30"/>
+        <ColumnConstraints percentWidth="30"/>
+        <ColumnConstraints percentWidth="30"/>
     </columnConstraints>
 
     <rowConstraints>
-        <RowConstraints percentHeight="25"/>
-        <RowConstraints percentHeight="25"/>
-        <RowConstraints percentHeight="25"/>
-        <RowConstraints percentHeight="25"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
     </rowConstraints>
 
     <Label
-            GridPane.rowIndex="0"
-            text="nickname"
-           fx:id="nickname"/>
+            GridPane.rowIndex="1"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="3"
+            styleClass="centered-text"
+            GridPane.halignment="CENTER"
+            text="Ingresa tu nombre de jugador"/>
+
+    <TextField
+            GridPane.rowIndex="2"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="3"
+            fx:id="nickname"
+    />
+
+
+
+    <Label
+            GridPane.rowIndex="4"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="3"
+            GridPane.halignment="CENTER"
+            styleClass="centered-text"
+            text="Selecciona la dificultad"
+    />
 
     <Button
-            GridPane.rowIndex="1"
+            GridPane.rowIndex="5"
+            GridPane.columnIndex="0"
             text="easy"
+            fx:id="easyButton"
+            styleClass="tall, wide"
             onMouseClicked="#setEasyGame"/>
     <Button
-            GridPane.rowIndex="2"
+            GridPane.rowIndex="5"
+            GridPane.columnIndex="1"
             text="normal"
+            fx:id="normalButton"
+            styleClass="tall, wide"
             onMouseClicked="#setNormalGame"/>
     <Button
-            GridPane.rowIndex="3"
+            GridPane.rowIndex="5"
+            GridPane.columnIndex="2"
             text="hard"
+            fx:id="hardButton"
+            styleClass="tall, wide"
             onMouseClicked="#setHardGame"/>
+
+    <VBox
+            GridPane.rowIndex="7"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="3"
+            styleClass="info"
+
+            fx:id="infoPane"/>
+
+    <Button
+            GridPane.rowIndex="8"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="3"
+            text="Buscar partida"
+            fx:id="startButton"
+            styleClass="wide"
+            disable="true"
+
+            onMouseClicked="#lookForMatch"
+    />
 
 </GridPane>

@@ -6,6 +6,7 @@ import client.model.Player;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Random;
 
 public class GameTest {
 
@@ -13,9 +14,38 @@ public class GameTest {
     private static GameManager gameManager;
     private static boolean isPlayerA;
 
+    public static void randomPlay(){
+        Random random = new Random();
+        int x, y;
+        for (int i =0; i < 100; i++){
+            x = random.nextInt(10);
+            y = random.nextInt(10);
+
+            if (random.nextInt(10) == 4){
+                gameManager.toggleFlagStatus(x, y);
+            }else {
+                gameManager.boxActived(x, y);
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) {
         player = new Player("test player");
-        gameManager = new GameManager();
+        try {
+            gameManager = new GameManager();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
         gameManager.setPlayer(player);
         gameManager.setDifficulty(MatchDifficulty.EASY);
@@ -23,16 +53,18 @@ public class GameTest {
         try {
             ClientConnection.connectToServer();
             ClientConnection.addClient(player);
-            gameManager.setMatchID(ClientConnection.joinPlayerToMatch(player));
-            isPlayerA = ClientConnection.askIsPlayerA(gameManager.getMatchID(), player.getNickname());
+
 
             gameManager.setMatchReady();
+            isPlayerA = ClientConnection.askIsPlayerA(gameManager.getMatchID(), player.getNickname());
             gameManager.startMatchAt(4,4);
-            gameManager.revealPlayerBoxValue(4,4);
+            gameManager.boxActived(4,4);
             gameManager.toggleFlagStatus(5,5);
 
-            ClientConnection.sendBoard(gameManager.getMatchID(), isPlayerA, gameManager.getPlayerBoard());
 
+
+            ClientConnection.sendBoard(gameManager.getMatchID(), isPlayerA, gameManager.getPlayerBoard());
+            randomPlay();
 
 
         } catch (MalformedURLException e) {

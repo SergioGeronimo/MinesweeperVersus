@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane
+        xmlns="http://javafx.com/javafx/11.0.1"
+        xmlns:fx="http://javafx.com/fxm/1"
+        fx:controller="client.ui.controller.StartMenuController"
+        stylesheets="/stylesheets/theme.css"
+        styleClass="main-container"
+        fx:id="mainContainer"
+        prefWidth="480.0"
+        prefHeight="852.0">
+
+    <columnConstraints>
+        <ColumnConstraints percentWidth="80"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="40"/>
+        <RowConstraints percentHeight="40"/>
+        <RowConstraints percentHeight="10"/>
+    </rowConstraints>
+
+
+    <Label
+            styleClass="main-title"
+            GridPane.columnIndex="0"
+            GridPane.rowIndex="1"
+            text="Minesweeper versus"/>
+
+    <Button
+            styleClass="wide"
+            GridPane.columnIndex="0"
+            GridPane.rowIndex="2"
+            onMouseClicked="#changeSceneToSelect"
+            text="Play"/>
+
+
+
+</GridPane>

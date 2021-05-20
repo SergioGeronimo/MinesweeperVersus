@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server extends UnicastRemoteObject implements ServerRemote {
     private static final long serialVersionUID = 1L;
-    private static final String  HOSTNAME = "192.168.0.4";
+    private static final String  HOSTNAME = "192.168.0.6";
     private static final int MAX_MATCHES = 100;
 
     Hashtable<String, Player> playerHashtable;
@@ -86,6 +86,9 @@ public class Server extends UnicastRemoteObject implements ServerRemote {
         return id.get();
     }
 
+    /*
+    * quita al jugador de una partida en especifico
+    * */
     @Override
     public void detachPlayerToMatch(int matchId, String nickname) throws RemoteException {
         Match match = matchHashtable.get(matchId);
@@ -96,6 +99,30 @@ public class Server extends UnicastRemoteObject implements ServerRemote {
             match.setPlayerB(null);
         }
 
+    }
+
+    /*
+    * Busca si el jugador esta en partida y lo quita
+    * si el jugador no se encuentra o es null nada pasa
+    * */
+    @Override
+    public void detachPlayer(Player player) throws RemoteException {
+        if (player != null) {
+            matchHashtable.forEach((key, value) -> {
+                if (player.getNickname().equals(value.getPlayerA().getNickname())) {
+                    value.setPlayerA(null);
+                } else {
+                    value.setPlayerB(null);
+                }
+            });
+        }
+    }
+
+    @Override
+    public boolean isMatchReady(int matchID) throws RemoteException {
+        boolean playerAReady = matchHashtable.get(matchID).getPlayerA() != null;
+        boolean playerBReady = matchHashtable.get(matchID).getPlayerB() != null;
+        return playerAReady && playerBReady;
     }
 
     @Override
@@ -175,6 +202,11 @@ public class Server extends UnicastRemoteObject implements ServerRemote {
         super();
         matchHashtable = new Hashtable<>();
         playerHashtable = new Hashtable<>();
+    }
+
+    @Override
+    public void setGameState(int matchID, GameState gameState) throws RemoteException {
+        matchHashtable.get(matchID).setGameState(gameState);
     }
 
     @Override

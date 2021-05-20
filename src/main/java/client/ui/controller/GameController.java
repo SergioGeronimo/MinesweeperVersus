@@ -1,12 +1,13 @@
 package client.ui.controller;
 
 import client.game.GameManager;
+import client.game.GameState;
 import client.ui.customcontrol.GameBoxButton;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -15,9 +16,7 @@ import client.model.Board;
 import client.model.Box;
 import client.model.BoxValue;
 
-public class GameController {
-
-    private Scene scene;
+public class GameController extends Controller{
 
     @FXML
     private GridPane mainContainer;
@@ -32,7 +31,6 @@ public class GameController {
 
     private GameBoxButton[][] playerBoxButtons, rivalBoxButtons;
 
-    GameManager gameManager;
 
     public void startUIUpdateThread(){
         Task<Void> voidTask = new Task<Void>() {
@@ -54,8 +52,9 @@ public class GameController {
     * */
     public void setMatchReady() {
 
-        playerBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
-        rivalBoxButtons = new GameBoxButton[gameManager.getRows()][gameManager.getColumns()];
+        playerBoxButtons = new GameBoxButton[getGameManager().getRows()][getGameManager().getColumns()];
+        rivalBoxButtons = new GameBoxButton[getGameManager().getRows()][getGameManager().getColumns()];
+        
 
         fillGridPaneWithButtons(
                 playerBoardContainer,
@@ -77,7 +76,7 @@ public class GameController {
     public void startMatch(MouseEvent mouseEvent){
         GameBoxButton source = (GameBoxButton) mouseEvent.getSource();
 
-        gameManager.startMatchAt(source.getColumn(), source.getRow());
+        getGameManager().startMatchAt(source.getColumn(), source.getRow());
 
 
 
@@ -85,7 +84,7 @@ public class GameController {
             for (int colIndex = 0; colIndex < playerBoxButtons[0].length; colIndex++) {
 
                 playerBoxButtons[rowIndex][colIndex]
-                        .setBox(gameManager.getPlayerBoard().getBoxAt(colIndex, rowIndex));
+                        .setBox(getGameManager().getPlayerBoard().getBoxAt(colIndex, rowIndex));
                 playerBoxButtons[rowIndex][colIndex]
                         .setOnMouseClicked(this::handleBoxClicked);
 
@@ -123,22 +122,22 @@ public class GameController {
     public void updateUI() throws InterruptedException {
         boolean keepRunning = true;
 
-        Board playerBoard = gameManager.getPlayerBoard();
-        Board[] allBoards = {gameManager.getPlayerBoard(), gameManager.getRivalBoard()};
+        Board playerBoard = getGameManager().getPlayerBoard();
+        Board[] allBoards = {getGameManager().getPlayerBoard(), getGameManager().getRivalBoard()};
         GameBoxButton[][][] allButtons = {playerBoxButtons, rivalBoxButtons};
 
         do{
 
-            if(gameManager.getRival() != null) {
+            if(getGameManager().getRival() != null) {
                 Platform.runLater(() -> {
-                    rivalLabel.setText(gameManager.getRival().getNickname());
+                    rivalLabel.setText(getGameManager().getRival().getNickname());
                 });
             }
 
 
             for (int boardIndex = 0; boardIndex < allBoards.length; boardIndex++) {
-                for (int rowIndex = 0; rowIndex < gameManager.getRows(); rowIndex++) {
-                    for (int colIndex = 0; colIndex < gameManager.getColumns(); colIndex++) {
+                for (int rowIndex = 0; rowIndex < getGameManager().getRows(); rowIndex++) {
+                    for (int colIndex = 0; colIndex < getGameManager().getColumns(); colIndex++) {
 
 
                         Box box = allBoards[boardIndex].getBoxAt(colIndex, rowIndex);
@@ -165,9 +164,6 @@ public class GameController {
                                         gameBoxButton.setText(value);
                                     });
 
-                                } else {
-                                    //cuando se pinta una mina se deja de actualizar los tableros
-                                    keepRunning = false;
                                 }
                                 break;
                             case HIDDEN:
@@ -178,15 +174,37 @@ public class GameController {
 
                         }
 
+                        if(getGameManager().getGameState() != GameState.UNDEFINED){
+                            keepRunning = false;
+                        }
                     }
                 }
             }
-            System.out.println(gameManager.getRival().getNickname());
 
             Thread.sleep(100);
-        }while (true);
+        }while (keepRunning);
+        System.out.println(getGameManager().getGameState().toString());
 
-
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        switch (getGameManager().getGameState()){
+            case PLAYER_LOST_BY_MINE:
+                alert.setTitle("Derrota");
+                alert.setContentText("Has activado una mina");
+                break;
+            case PLAYER_WON_BY_FLAG:
+                alert.setTitle("Victoria");
+                alert.setContentText("Has desactivado todas las minas");
+                break;
+            case RIVAL_WON_BY_FLAG:
+                alert.setTitle("Derrota");
+                alert.setContentText("El rival desactivo todas las minas");
+                break;
+            case RIVAL_LOST_BY_FLAG:
+                alert.setTitle("Victoria");
+                alert.setContentText("El rival activo una mina");
+                break;
+        }
+        alert.show();
     }
 
     /*
@@ -201,11 +219,11 @@ public class GameController {
         int boxRow = boxButtonSource.getRow();
 
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            gameManager.revealPlayerBoxValue(boxColumn, boxRow);
+            getGameManager().boxActived(boxColumn, boxRow);
 
         }else {
 
-            gameManager.toggleFlagStatus(boxColumn, boxRow);
+            getGameManager().toggleFlagStatus(boxColumn, boxRow);
 
         }
 
@@ -222,8 +240,8 @@ public class GameController {
     public void fillGridPaneWithButtons(GridPane boardContainer, GameBoxButton[][] boxButtonsArray, boolean isDisabled){
 
         boardContainer.getChildren().clear();
-        int columns = gameManager.getColumns();
-        int rows = gameManager.getRows();
+        int columns = getGameManager().getColumns();
+        int rows = getGameManager().getRows();
 
 
         ObservableList<ColumnConstraints> containerColumnConstraints = boardContainer.getColumnConstraints();
@@ -280,16 +298,8 @@ public class GameController {
 
     }
 
-    public GameManager getGameManager() {
-        return gameManager;
-    }
-
-    public void setGameManager(GameManager gameManager) {
-        this.gameManager = gameManager;
-    }
-
     public void updateLabels() {
-        rivalLabel.setText(gameManager.getRival().getNickname());
-        playerLabel.setText(gameManager.getPlayer().getNickname());
+        rivalLabel.setText(getGameManager().getRival().getNickname());
+        playerLabel.setText(getGameManager().getPlayer().getNickname());
     }
 }

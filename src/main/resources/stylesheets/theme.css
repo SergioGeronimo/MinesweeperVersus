@@ -18,22 +18,107 @@ F   verde-claro #98ee99
 1   azul:       #4d52ff
 
 */
-
+@font-face {
+    src:
+            url("../fonts/Montserrat-Regular.ttf")
+            url("../fonts/Montserrat-SemiBold.ttf");
+}
 
 
 .button{
     -fx-border-color: none;
     -fx-border-width: 2px;
-    -fx-background-radius: 12px;
-    -fx-border-radius: 12px;
+    -fx-background-radius: 1em;
+    -fx-border-radius: 1em;
     -fx-background-color: #b9b8b8;
-    -fx-font-size: 1.5em;
     -fx-background-size: 1.5em;
+    -fx-font-family: "Montserrat SemiBold";
+    -fx-label-padding: 0.5em;
+}
+
+.button:hover{
+    -fx-border-color: #010102;
+    -fx-border-width: 2px;
+}
+
+.button:pressed{
+    -fx-background-color: #ebeaea;
+}
+
+.label{
+    -fx-wrap-text: true;
+}
+
+.text-field{
+    -fx-text-alignment: center;
+    -fx-padding: 0.5em 1em 0.5em 1em;
+    -fx-border-width: 2px;
+    -fx-border-radius: 2em;
+    -fx-background-radius: 2em;
+    -fx-background-color: #ebeaea;
+}
+
+.text-field:focused{
+    -fx-background-color: #ffffff;
+    -fx-border-color: #010102;
+}
+
+.text-field:hover{
+    -fx-border-color: #010102;
+}
+
+.text-area{
+    -fx-background-color: #ebeaea;
+    -fx-border-radius: 2em;
+    -fx-background-radius: 2em;
+}
+
+.found:disabled{
+    -fx-background-color: #98ee99;
+    -fx-font-size: 2em;
+    -fx-font-family: "Gontserrat Bold";
+}
+
+.text-area:disabled{
+    -fx-opacity: 1;
+    -fx-border-color: none;
+    -fx-background-color: #ffffff
+}
+
+.centered-text{
+    -fx-text-alignment: center;
+    -fx-column-halignment: center;
+
+}
+
+.main-title{
+    -fx-text-alignment: center;
+    -fx-font-size: 4em;
+    -fx-font-family: "Montserrat SemiBold";
+}
+
+.info{
+    -fx-background-radius: 2em;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+
+    -fx-wrap-text: true;
+    -fx-padding: 1em;
+    -fx-vgap: 0.5em;
+}
+
+
+.wide{
+    -fx-max-width: Infinity;
+}
+
+.tall{
+    -fx-max-height: Infinity;
 }
 
 .large-text{
-    -fx-font-size: 2em;
-    -fx-background-size: 2em;
+    -fx-font-size: 1.5em;
+    -fx-background-size: 1.5em;
 }
 
 .small-text{
@@ -41,21 +126,25 @@ F   verde-claro #98ee99
     -fx-background-size: 1em;
 }
 
+.easy-selected{
+    -fx-background-color: #26c6da;
+    -fx-border-color: #010102;
+}
+
+.normal-selected{
+    -fx-background-color: #ffa726;
+    -fx-border-color: #010102;
+}
+
+.hard-selected{
+    -fx-background-color: #ef5350;
+    -fx-border-color: #010102;
+}
+
 .game-box{
     -fx-max-width: Infinity;
     -fx-max-height: Infinity;
     -fx-font-weight: bold;
-    
-}
-
-.game-box:hover{
-    -fx-border-color: #010102;
-    -fx-border-width: 2px;
-    -fx-animated: true;
-}
-
-.game-box:pressed{
-    -fx-background-color: #ebeaea;
 }
 
 .game-box:disabled{
@@ -130,7 +219,11 @@ F   verde-claro #98ee99
 .main-container{
     -fx-background-color: #ffffff;
     -fx-text-fill: #010102;
-
+    -fx-font-family: "Montserrat";
+    -fx-font-size: 14px;
+    -fx-hgap: 0.5em;
+    -fx-vgap: 0.5em;
+    -fx-alignment: center;
 }
 
 .game-menu{
@@ -138,7 +231,6 @@ F   verde-claro #98ee99
 }
 
 .board-container{
-
     -fx-hgap: 2px;
     -fx-vgap: 2px;
 }

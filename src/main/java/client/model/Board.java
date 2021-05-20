@@ -67,7 +67,7 @@ public class Board implements Serializable {
     }
 
     /*
-     *  Genera el mapa con minas puestas pseudoaleatoriamente,
+     *  Genera el tablero con minas puestas pseudoaleatoriamente,
      *  evita la casilla donde inicia el jugador, asi no hay
      *  forma de perder al instante
      *  @params columna y renglon de casilla a evitar (inicial)

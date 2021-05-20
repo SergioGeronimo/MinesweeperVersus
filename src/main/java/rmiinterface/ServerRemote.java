@@ -27,7 +27,13 @@ public interface ServerRemote extends Remote {
 
     public GameState getGameState(int matchID) throws RemoteException;
 
+    public boolean isMatchReady(int matchID) throws RemoteException;
+
     public boolean askIsPlayerA(int matchID, String nickname) throws RemoteException;
 
     Player getRival(int matchID, boolean isPlayerA) throws RemoteException;
+
+    void detachPlayer(Player player) throws RemoteException;
+
+    void setGameState(int matchID, GameState gameState) throws RemoteException;
 }
