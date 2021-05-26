@@ -21,7 +21,7 @@ public class StartMenuController extends Controller{
     private GridPane mainContainer;
     Player player;
 
-    //Cambia escena del lobby a la seleccion de juego, pasa toda
+    //Cambia escena del inicio a la seleccion de juego, pasa toda
     //la infromacion necesario al siguiente controlador
     public void changeSceneToSelect(MouseEvent mouseEvent){
 

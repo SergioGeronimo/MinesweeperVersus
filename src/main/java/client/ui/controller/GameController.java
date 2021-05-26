@@ -19,6 +19,8 @@ import client.model.BoxValue;
 public class GameController extends Controller{
 
     @FXML
+    private VBox gameMenu;
+    @FXML
     private GridPane mainContainer;
     @FXML
     private Label playerLabel;
@@ -31,7 +33,10 @@ public class GameController extends Controller{
 
     private GameBoxButton[][] playerBoxButtons, rivalBoxButtons;
 
-
+    /*
+    * Inicia el hilo para actualizar la interfaz grafica
+    *
+    * */
     public void startUIUpdateThread(){
         Task<Void> voidTask = new Task<Void>() {
             @Override
@@ -183,32 +188,14 @@ public class GameController extends Controller{
 
             Thread.sleep(100);
         }while (keepRunning);
-        System.out.println(getGameManager().getGameState().toString());
 
-        Alert alert = new Alert(Alert.AlertType.NONE);
-        switch (getGameManager().getGameState()){
-            case PLAYER_LOST_BY_MINE:
-                alert.setTitle("Derrota");
-                alert.setContentText("Has activado una mina");
-                break;
-            case PLAYER_WON_BY_FLAG:
-                alert.setTitle("Victoria");
-                alert.setContentText("Has desactivado todas las minas");
-                break;
-            case RIVAL_WON_BY_FLAG:
-                alert.setTitle("Derrota");
-                alert.setContentText("El rival desactivo todas las minas");
-                break;
-            case RIVAL_LOST_BY_FLAG:
-                alert.setTitle("Victoria");
-                alert.setContentText("El rival activo una mina");
-                break;
-        }
-        alert.show();
+        playerLabel.setText(getGameManager().getGameState().toString());
+
+
     }
 
     /*
-    * Decide que hacer hacer con clic primario o secundario,
+    * Decide que hacer con clic primario o secundario,
     * si es primario se revela el valor
     * si es secundario se alterna su estado de bandera
     * */
@@ -297,7 +284,7 @@ public class GameController extends Controller{
         }
 
     }
-
+    //Actualizar el nombre de los jugadores
     public void updateLabels() {
         rivalLabel.setText(getGameManager().getRival().getNickname());
         playerLabel.setText(getGameManager().getPlayer().getNickname());

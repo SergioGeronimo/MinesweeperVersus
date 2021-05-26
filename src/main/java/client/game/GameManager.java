@@ -139,7 +139,6 @@ public class GameManager implements Runnable{
     public void setMatchReady() {
         try {
             this.matchID = ClientConnection.joinPlayerToMatch(player);
-            System.out.println("matchId=" + matchID);
         } catch (RemoteException remoteException) {
             remoteException.printStackTrace();
         }
@@ -262,7 +261,7 @@ public class GameManager implements Runnable{
     @Override
     public void run() {
         GameState rivalGameState = GameState.UNDEFINED;
-        while (this.gameState == GameState.UNDEFINED){
+        while (this.gameState == GameState.UNDEFINED && rivalGameState == GameState.UNDEFINED){
 
             try {
                 if (ClientConnection.askIsMatchReady(matchID)) {
@@ -295,7 +294,6 @@ public class GameManager implements Runnable{
 
                     try {
                         rivalGameState = ClientConnection.getGameState(matchID);
-                        System.out.println("rival: " + rivalGameState.toString());
                         if(rivalGameState != GameState.UNDEFINED){
                             isGameStateFromRival = true;
                         }
@@ -316,7 +314,7 @@ public class GameManager implements Runnable{
         if(isGameStateFromRival) {
             switch (rivalGameState) {
                 case PLAYER_LOST_BY_MINE:
-                    this.gameState = GameState.RIVAL_LOST_BY_FLAG;
+                    this.gameState = GameState.RIVAL_LOST_BY_MINE;
                     break;
                 case PLAYER_WON_BY_FLAG:
                     this.gameState = GameState.RIVAL_WON_BY_FLAG;

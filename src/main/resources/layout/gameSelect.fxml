@@ -62,7 +62,7 @@
     <Button
             GridPane.rowIndex="5"
             GridPane.columnIndex="0"
-            text="easy"
+            text="facil"
             fx:id="easyButton"
             styleClass="tall, wide"
             onMouseClicked="#setEasyGame"/>
@@ -76,7 +76,7 @@
     <Button
             GridPane.rowIndex="5"
             GridPane.columnIndex="2"
-            text="hard"
+            text="dificil"
             fx:id="hardButton"
             styleClass="tall, wide"
             onMouseClicked="#setHardGame"/>

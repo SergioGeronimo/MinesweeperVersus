@@ -40,15 +40,10 @@
             GridPane.columnIndex="0"
             GridPane.rowIndex="0"
             GridPane.columnSpan="10"
+            fx:id="gameMenu"
             styleClass="game-menu"/>
 
     <!-- player match stats -->
-    <Label
-            text="Mines left"
-            GridPane.columnIndex="1"
-            GridPane.rowIndex="2"
-            GridPane.fillWidth=""
-            GridPane.halignment="CENTER" />
     <Label
             text="Player"
             fx:id="playerLabel"
@@ -56,11 +51,6 @@
             GridPane.columnIndex="2"
             GridPane.rowIndex="2"
             GridPane.halignment="CENTER" />
-    <Label
-            text="Flagged mines"
-            GridPane.columnIndex="3"
-            GridPane.rowIndex="2"
-            GridPane.halignment="CENTER"/>
 
 
 
@@ -86,22 +76,11 @@
 
     <!-- rival match stats -->
     <Label
-            text="Flagged mines"
-            GridPane.columnIndex="6"
-            GridPane.rowIndex="2"
-            GridPane.halignment="CENTER"/>
-    <Label
             text="Rival"
             fx:id="rivalLabel"
             GridPane.columnIndex="7"
             GridPane.rowIndex="2"
             GridPane.halignment="CENTER" />
-    <Label
-            text="Mines left"
-            GridPane.columnIndex="8"
-            GridPane.rowIndex="2"
-            GridPane.halignment="CENTER" />
-
 
 
     <!-- rival board container -->

@@ -37,7 +37,10 @@ public class GameSelectController extends Controller{
     private Task<Void> uiTask;
     private Thread uiThread;
 
-
+    /*
+    * Se llama al leer el archivo FXML, lee los iconos necesario para la animacion de carga
+    * crea el hilo especial para actualizar la interfaz, pero no lo inicia
+    * */
     @FXML
     public void initialize(){
         infoLabel = new Label();
@@ -57,7 +60,7 @@ public class GameSelectController extends Controller{
             } );
 
             while (!getGameManager().isMatchReady()){
-                waitingImage.setRotate(waitingImage.getRotate() + 15);
+                waitingImage.setRotate(waitingImage.getRotate() + 5);
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -81,7 +84,9 @@ public class GameSelectController extends Controller{
         });
     }
 
-
+    /*
+    * Pone la dificultad a facil
+    * */
     public void setEasyGame(MouseEvent mouseEvent) {
 
         easyButton.getStyleClass().add("easy-selected");
@@ -91,7 +96,9 @@ public class GameSelectController extends Controller{
         getGameManager().setDifficulty(MatchDifficulty.EASY);
         startButton.setDisable(false);
     }
-
+    /*
+    * Pone la dificultad a normal
+    * */
     public void setNormalGame(MouseEvent mouseEvent) {
 
         easyButton.getStyleClass().remove("easy-selected");
@@ -101,7 +108,9 @@ public class GameSelectController extends Controller{
         getGameManager().setDifficulty(MatchDifficulty.NORMAL);
         startButton.setDisable(false);
     }
-
+    /*
+    * Pone la dificultad a dificil
+    * */
     public void setHardGame(MouseEvent mouseEvent) {
 
         easyButton.getStyleClass().remove("easy-selected");
@@ -113,8 +122,8 @@ public class GameSelectController extends Controller{
     }
 
 
-    //Cambia escena del lobby al juego, pasa toda
-    //la infromacion necesario al siguiente controlador
+    //Cambia escena de la seleccion al juego, pasa toda
+    //la informacion necesario al siguiente controlador
     public void toGameScene(){
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/game.fxml"));
 
@@ -140,7 +149,10 @@ public class GameSelectController extends Controller{
         }
     }
 
-
+    /*
+    * Pone en espera para iniciar el juego, preguntando a GameManager si esta listo
+    * Inicia el hilo para la animacion de espera
+    * */
     public void lookForMatch(MouseEvent actionEvent) {
         if (validateStartCondition()){
             getGameManager()
@@ -152,7 +164,7 @@ public class GameSelectController extends Controller{
                     .getStyleClass()
                     .remove("required");
 
-            startButton.setText("Cancel");
+            startButton.setText("Cancelar");
             startButton.setOnMouseClicked(this::cancelMatch);
             getGameManager().setMatchReady();
 
@@ -164,6 +176,10 @@ public class GameSelectController extends Controller{
         }
     }
 
+
+    /*
+    * cancela la busqueda de partida
+    * */
     public void cancelMatch(MouseEvent mouseEvent){
         startButton.setText("Buscar partida");
         startButton.setOnMouseClicked(this::lookForMatch);
@@ -175,7 +191,9 @@ public class GameSelectController extends Controller{
         hardButton.setDisable(false);
     }
 
-
+    /*
+    * Validacion del nombre de usuario y dificultad
+    * */
     public boolean validateStartCondition(){
         return !nickname.getText().equals("") && getGameManager().getDifficulty() != null;
     }

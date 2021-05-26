@@ -64,7 +64,8 @@ public class GameTest {
 
 
             ClientConnection.sendBoard(gameManager.getMatchID(), isPlayerA, gameManager.getPlayerBoard());
-            randomPlay();
+            //randomPlay();
+            gameManager.disconnect();
 
 
         } catch (MalformedURLException e) {
