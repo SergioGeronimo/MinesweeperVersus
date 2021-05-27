@@ -16,7 +16,6 @@ import java.io.IOException;
 
 public class StartMenuController extends Controller{
 
-
     @FXML
     private GridPane mainContainer;
     Player player;
@@ -24,22 +23,14 @@ public class StartMenuController extends Controller{
     //Cambia escena del inicio a la seleccion de juego, pasa toda
     //la infromacion necesario al siguiente controlador
     public void changeSceneToSelect(MouseEvent mouseEvent){
-
-        Parent root;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/gameSelect.fxml"));
-
-        try {
-            root = fxmlLoader.load();
-
-            GameSelectController controller = fxmlLoader.getController();
-            controller.setGameManager(getGameManager());
-
-            controller.setScene(getScene());
-            getScene().setRoot(root);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-
+        setNextScenePath("/layout/gameSelect.fxml");
+        toNextScene();
     }
+
+    public void changeSceneToSettings(MouseEvent mouseEvent) {
+        setNextScenePath("/layout/settings.fxml");
+        toNextScene();
+    }
+
 
 }

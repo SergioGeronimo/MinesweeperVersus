@@ -154,6 +154,7 @@ public class GameController extends Controller{
                                 //bugfix ui_1: busca si la casilla ya tenia la clase asi no tiene la clase dos veces
                                 if (!gameBoxButton.getStyleClass().contains("flagged"))
                                     gameBoxButton.getStyleClass().add("flagged");
+
                                 break;
                             case VISIBLE:
                                 String value = box.getValue().getValue();

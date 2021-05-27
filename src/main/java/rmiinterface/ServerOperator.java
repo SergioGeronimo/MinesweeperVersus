@@ -9,7 +9,7 @@ import client.model.Player;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface ServerRemote extends Remote {
+public interface ServerOperator extends Remote {
 
     public boolean addClient(Player player) throws RemoteException;
 

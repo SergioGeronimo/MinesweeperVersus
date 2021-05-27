@@ -5,7 +5,7 @@ import client.model.Board;
 import client.model.Box;
 import client.model.Match;
 import client.model.Player;
-import rmiinterface.ServerRemote;
+import rmiinterface.ServerOperator;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -18,9 +18,9 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Server extends UnicastRemoteObject implements ServerRemote {
+public class Server extends UnicastRemoteObject implements ServerOperator {
     private static final long serialVersionUID = 1L;
-    private static final String  HOSTNAME = "192.168.0.6";
+    private static final String  HOSTNAME = "25.7.213.75:4444";
     private static final int MAX_MATCHES = 100;
 
     Hashtable<String, Player> playerHashtable;
@@ -229,7 +229,7 @@ public class Server extends UnicastRemoteObject implements ServerRemote {
 
             System.setProperty("java.rmi.server.hostname", HOSTNAME);
             Registry registry = LocateRegistry.createRegistry(4444);
-            Naming.rebind("rmi://localhost:4444/MinesweeperServer", new Server());
+            Naming.rebind("rmi://"+ HOSTNAME +"/MinesweeperServer", new Server());
             System.err.println("Server launched");
         } catch (RemoteException | MalformedURLException e) {
             e.printStackTrace();

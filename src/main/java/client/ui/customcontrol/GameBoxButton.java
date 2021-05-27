@@ -13,39 +13,7 @@ public class GameBoxButton extends Button {
         this.column = column;
         this.row = row;
     }
-
-    public GameBoxButton(String s, int column, int row) {
-        super(s);
-        this.column = column;
-        this.row = row;
-    }
-
-    public GameBoxButton(String s, Node node, int column, int row) {
-        super(s, node);
-        this.column = column;
-        this.row = row;
-    }
-
-    public GameBoxButton(int column, int row, Box box) {
-        this.column = column;
-        this.row = row;
-        this.box = box;
-    }
-
-    public GameBoxButton(String s, int column, int row, Box box) {
-        super(s);
-        this.column = column;
-        this.row = row;
-        this.box = box;
-    }
-
-    public GameBoxButton(String s, Node node, int column, int row, Box box) {
-        super(s, node);
-        this.column = column;
-        this.row = row;
-        this.box = box;
-    }
-
+    //Getters y setters basicos y comunes
     public Box getBox() {
         return box;
     }

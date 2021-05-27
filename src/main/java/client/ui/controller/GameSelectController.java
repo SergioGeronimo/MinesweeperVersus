@@ -46,10 +46,12 @@ public class GameSelectController extends Controller{
         infoLabel = new Label();
         waitingImage = new ImageView("/icons/mine.png");
 
+        infoPane.getChildren().add(infoLabel);
+
         uiThread = new Thread(()->{
             Platform.runLater( () ->{
 
-                infoPane.getChildren().addAll(waitingImage, infoLabel);
+                infoPane.getChildren().add(0, waitingImage);
 
                 infoLabel.setText("Buscando partida");
                 infoPane.getStyleClass().add("waiting");
@@ -93,8 +95,12 @@ public class GameSelectController extends Controller{
         normalButton.getStyleClass().remove("normal-selected");
         hardButton.getStyleClass().remove("hard-selected");
 
-        getGameManager().setDifficulty(MatchDifficulty.EASY);
-        startButton.setDisable(false);
+        try {
+            getGameManager().setDifficulty(MatchDifficulty.EASY);
+            startButton.setDisable(false);
+        }catch (NullPointerException exception){
+            infoLabel.setText("Sin conexion al servidor");
+        }
     }
     /*
     * Pone la dificultad a normal
@@ -105,8 +111,12 @@ public class GameSelectController extends Controller{
         normalButton.getStyleClass().add("normal-selected");
         hardButton.getStyleClass().remove("hard-selected");
 
-        getGameManager().setDifficulty(MatchDifficulty.NORMAL);
-        startButton.setDisable(false);
+        try {
+            getGameManager().setDifficulty(MatchDifficulty.NORMAL);
+            startButton.setDisable(false);
+        }catch (NullPointerException exception){
+            infoLabel.setText("Sin conexion al servidor");
+        }
     }
     /*
     * Pone la dificultad a dificil
@@ -125,28 +135,8 @@ public class GameSelectController extends Controller{
     //Cambia escena de la seleccion al juego, pasa toda
     //la informacion necesario al siguiente controlador
     public void toGameScene(){
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/game.fxml"));
-
-        try {
-            Parent root = fxmlLoader.load();
-            GameController gameController = fxmlLoader.getController();
-            gameController.setGameManager( getGameManager());
-            gameController.setMatchReady();
-            gameController.updateLabels();
-             getScene().setRoot(root);
-             getScene()
-                     .getWindow()
-                     .setWidth(1280);
-             getScene()
-                     .getWindow()
-                     .setHeight(720);
-             getScene()
-                     .getWindow()
-                     .centerOnScreen();
-
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+        setNextScenePath("/layout/game.fxml");
+        toNextScene();
     }
 
     /*
