@@ -3,7 +3,7 @@ Dado que la version de CSS no admite variables, aqui esta cada color usado y su 
 
 
 NA  Negro:      #232323
-NA  Blanco:     #fffaf4     light   #ffffff     dark    #b9b8b8
+NA  Blanco:     #fafafafa     light   #ffffff     dark    #b8b8b8
 
 X   Rojo:       #ef5350
 F   Verde:      #8ce10b
@@ -29,7 +29,7 @@ F   Verde:      #8ce10b
     -fx-border-width: 2px;
     -fx-background-radius: 1em;
     -fx-border-radius: 1em;
-    -fx-background-color: #b9b8b8;
+    -fx-background-color: #b8b8b8;
     -fx-background-size: 1.5em;
     -fx-font-family: "Montserrat SemiBold";
     -fx-label-padding: 0.5em;
@@ -41,7 +41,7 @@ F   Verde:      #8ce10b
 }
 
 .button:pressed{
-    -fx-background-color: #fffaf4;
+    -fx-background-color: #fafafafa;
 }
 
 .label{
@@ -54,7 +54,7 @@ F   Verde:      #8ce10b
     -fx-border-width: 2px;
     -fx-border-radius: 2em;
     -fx-background-radius: 2em;
-    -fx-background-color: #fffaf4;
+    -fx-background-color: #fafafafa;
 }
 
 .text-field:focused{
@@ -67,7 +67,7 @@ F   Verde:      #8ce10b
 }
 
 .text-area{
-    -fx-background-color: #fffaf4;
+    -fx-background-color: #fafafafa;
     -fx-border-radius: 2em;
     -fx-background-radius: 2em;
 }
@@ -148,7 +148,7 @@ F   Verde:      #8ce10b
 
 .game-box:disabled{
     -fx-opacity: 1.0;
-    -fx-border-color: #b9b8b8;
+    -fx-border-color: #b8b8b8;
     -fx-background-color: #ffffff;
 }
 
@@ -181,7 +181,7 @@ F   Verde:      #8ce10b
   }
 
 .value-0:disabled{
-    -fx-border-color: #fffaf4;
+    -fx-border-color: #fafafafa;
 }
 
 .value-1{
@@ -226,10 +226,18 @@ F   Verde:      #8ce10b
 }
 
 .game-menu{
-    -fx-background-color: #fffaf4;
+    -fx-background-color: #fafafafa;
 }
 
 .board-container{
     -fx-hgap: 2px;
     -fx-vgap: 2px;
+}
+
+.victory{
+    -fx-background-color: rgba(140, 225, 11, 0.25);
+}
+
+.defeat{
+    -fx-background-color: rgba(239, 83, 80, 0.25);
 }

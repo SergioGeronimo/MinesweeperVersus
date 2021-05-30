@@ -4,6 +4,7 @@ import client.game.GameManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Window;
 
 import java.io.IOException;
 
@@ -34,6 +35,12 @@ public class Controller {
 
     public void setNextScenePath(String nextScenePath) {
         this.nextScenePath = nextScenePath;
+    }
+
+    public void resizeWindow(int width, int height){
+        Window sceneWindow = scene.getWindow();
+        sceneWindow.setWidth(width);
+        sceneWindow.setHeight(height);
     }
 
     public Controller toNextScene(){

@@ -130,6 +130,7 @@ public class GameSelectController extends Controller{
     public void toGameScene(){
         setNextScenePath("/layout/client/game.fxml");
         GameController controller = (GameController) toNextScene();
+        controller.resizeWindow(1280, 720);
         controller.setMatchReady();
     }
 

@@ -25,6 +25,7 @@ public class GameManager implements Runnable{
     private MatchState matchState = MatchState.UNDEFINED;
     private MatchDifficulty matchDifficulty;
     private boolean isGameStateFromRival;
+    private boolean matchReady;
 
     public GameManager() throws RemoteException, NotBoundException, MalformedURLException {
         updateInfoThread = new Thread(this);
@@ -272,6 +273,7 @@ public class GameManager implements Runnable{
         while (this.matchState == MatchState.UNDEFINED && rivalMatchState == MatchState.UNDEFINED){
             try {
                 if (ClientConnection.askIsMatchReady(matchID)) {
+                    matchReady = true;
                     if (rival == null) {
                         try {
                             this.rival = ClientConnection.getRival(matchID, isPlayerA);
@@ -356,6 +358,6 @@ public class GameManager implements Runnable{
     }
 
     public boolean isMatchReady() {
-        return (rival != null && rivalBoard != null);
+        return matchReady;
     }
 }

@@ -52,8 +52,6 @@
             GridPane.rowIndex="2"
             GridPane.halignment="CENTER" />
 
-
-
     <!--player board container -->
     <GridPane
             fx:id="playerBoardContainer"
@@ -98,6 +96,53 @@
         <rowConstraints>
             <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
+    </GridPane>
+
+    <!-- result gridpane container -->
+    <GridPane
+            styleClass="resultContainer"
+            GridPane.columnIndex="1"
+            GridPane.columnSpan="8"
+            GridPane.rowIndex="3"
+            visible="false"
+            fx:id="resultContainer">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="40"/>
+            <ColumnConstraints percentWidth="20"/>
+            <ColumnConstraints percentWidth="40"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints percentHeight="20"/>
+            <RowConstraints percentHeight="30"/>
+            <RowConstraints percentHeight="15"/>
+            <RowConstraints percentHeight="15"/>
+            <RowConstraints percentHeight="20"/>
+        </rowConstraints>
+        <Label
+                fx:id="resultLabel"
+                text="result"
+                GridPane.rowIndex="1"
+                GridPane.columnIndex="0"
+                GridPane.columnSpan="3"
+                GridPane.halignment="CENTER"
+                styleClass="main-title, centered-text"/>
+        <Label
+                fx:id="resultInfo"
+                text="result info"
+                GridPane.rowIndex="2"
+                GridPane.columnIndex="0"
+                GridPane.columnSpan="3"
+                GridPane.valignment="TOP"
+                GridPane.halignment="CENTER"
+                styleClass="centered-text"
+        />
+        <Button
+                styleClass="wide"
+                text="salir"
+                GridPane.rowIndex="3"
+                GridPane.columnIndex="1"
+        />
+
     </GridPane>
 
 </GridPane>

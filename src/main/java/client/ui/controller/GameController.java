@@ -15,7 +15,12 @@ import client.model.Box;
 import client.model.BoxValue;
 
 public class GameController extends Controller{
-
+    @FXML
+    private Label resultLabel;
+    @FXML
+    private Label resultInfo;
+    @FXML
+    private GridPane resultContainer;
     @FXML
     private VBox gameMenu;
     @FXML
@@ -96,17 +101,7 @@ public class GameController extends Controller{
         }
 
         handleBoxClicked(mouseEvent);
-
-
-        Task<Void> voidTask = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                updateUI();
-                return null;
-            }
-        };
-
-        new Thread(voidTask).start();
+        startUIUpdateThread();
 
     }
 
@@ -187,11 +182,29 @@ public class GameController extends Controller{
 
             Thread.sleep(100);
         }while (keepRunning);
-
-        playerLabel.setText(getGameManager().getGameState().toString());
-
+        showResultsBanner();
 
     }
+
+    private void showResultsBanner() {
+        resultContainer.setVisible(true);
+        MatchState matchState = getGameManager().getGameState();
+
+        if (    matchState == MatchState.RIVAL_WON_BY_FLAG ||
+                matchState == MatchState.PLAYER_LOST_BY_MINE){
+            resultContainer.getStyleClass().add("defeat");
+            resultLabel.setText("Derrota");
+
+        }else {
+            resultContainer.getStyleClass().add("victory");
+            resultLabel.setText("Victoria");
+        }
+
+        resultInfo.setText(matchState.toString());
+
+    }
+
+
 
     /*
     * Decide que hacer con clic primario o secundario,
@@ -283,9 +296,5 @@ public class GameController extends Controller{
         }
 
     }
-    //Actualizar el nombre de los jugadores
-    public void updateLabels() {
-        rivalLabel.setText(getGameManager().getRival().getNickname());
-        playerLabel.setText(getGameManager().getPlayer().getNickname());
-    }
+
 }
