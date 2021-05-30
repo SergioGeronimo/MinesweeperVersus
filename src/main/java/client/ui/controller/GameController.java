@@ -1,13 +1,11 @@
 package client.ui.controller;
 
-import client.game.GameManager;
-import client.game.GameState;
+import client.game.MatchState;
 import client.ui.customcontrol.GameBoxButton;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -180,7 +178,7 @@ public class GameController extends Controller{
 
                         }
 
-                        if(getGameManager().getGameState() != GameState.UNDEFINED){
+                        if(getGameManager().getGameState() != MatchState.UNDEFINED){
                             keepRunning = false;
                         }
                     }

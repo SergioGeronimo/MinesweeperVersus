@@ -2,8 +2,6 @@ package client.game;
 
 import client.connection.ClientConnection;
 import client.model.*;
-import javafx.concurrent.Task;
-import javafx.scene.control.Alert;
 
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
@@ -24,7 +22,7 @@ public class GameManager implements Runnable{
     private Board playerBoard, rivalBoard;
     private int columns, rows, mines;
     private int playerCorrectFlags = 0;
-    private GameState gameState = GameState.UNDEFINED;
+    private MatchState matchState = MatchState.UNDEFINED;
     private MatchDifficulty matchDifficulty;
     private boolean isGameStateFromRival;
 
@@ -114,42 +112,47 @@ public class GameManager implements Runnable{
         this.mines = mines;
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public MatchState getGameState() {
+        return matchState;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
+    public void setGameState(MatchState matchState) {
+        this.matchState = matchState;
     }
 
     //desconectar del servidor
     public void disconnect() {
         try {
+            updateInfoThread.interrupt();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
 
+        try {
             ClientConnection.disconnect(player);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
+        } catch (MalformedURLException | RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
     }
 
+
     public void setMatchReady() {
         try {
-            this.matchID = ClientConnection.joinPlayerToMatch(player);
+            this.matchID = ClientConnection.joinPlayerToMatch(player, matchDifficulty);
         } catch (RemoteException remoteException) {
             remoteException.printStackTrace();
         }
-        updateInfoThread.start();
+
+
         playerBoard = new Board(columns,rows,mines);
         playerBoard.generateEmptyGrid();
         try {
+            updateInfoThread.start();
             isPlayerA = ClientConnection.askIsPlayerA(this.matchID,player.getNickname());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
 
     }
     //interrumpe el hilo para actualizar informacion y crea uno nuevo, es decir "reinicia el hilo"
@@ -157,6 +160,11 @@ public class GameManager implements Runnable{
         updateInfoThread.interrupt();
         updateInfoThread = new Thread(this);
         playerBoard = null;
+        try {
+            ClientConnection.detachPlayerToMatch(matchID, player);
+        } catch (RemoteException remoteException) {
+            remoteException.printStackTrace();
+        }
     }
 
 
@@ -188,7 +196,7 @@ public class GameManager implements Runnable{
 
         calculateGameState(column, row, false);
         try {
-            ClientConnection.sendGameState(this.matchID, this.gameState);
+            ClientConnection.sendGameState(this.matchID, this.matchState);
         } catch (RemoteException remoteException) {
             remoteException.printStackTrace();
         }
@@ -205,7 +213,7 @@ public class GameManager implements Runnable{
         //si la casilla activada es una mina, el jugador pierde
         if (box.getValue() == BoxValue.MINE
                     && box.getStatus() == BoxStatus.VISIBLE){
-            this.gameState = GameState.PLAYER_LOST_BY_MINE;
+            this.matchState = MatchState.PLAYER_LOST_BY_MINE;
 
             //si la casilla es una bandera y tiene mina
         }else if (box.getValue() == BoxValue.MINE
@@ -215,7 +223,7 @@ public class GameManager implements Runnable{
 
             //cuando todas las minas tengan banderas, el jugador gana
             if (playerCorrectFlags == mines){
-                this.gameState = GameState.PLAYER_WON_BY_FLAG;
+                this.matchState = MatchState.PLAYER_WON_BY_FLAG;
 
             }
         //si se quita una bandera correcta, entonces el contador de banderas decrece en uno
@@ -247,7 +255,7 @@ public class GameManager implements Runnable{
 
         try {
             ClientConnection.sendBox(matchID, isPlayerA, box);
-            ClientConnection.sendGameState(matchID, this.gameState);
+            ClientConnection.sendGameState(matchID, this.matchState);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -260,12 +268,10 @@ public class GameManager implements Runnable{
 
     @Override
     public void run() {
-        GameState rivalGameState = GameState.UNDEFINED;
-        while (this.gameState == GameState.UNDEFINED && rivalGameState == GameState.UNDEFINED){
-
+        MatchState rivalMatchState = MatchState.UNDEFINED;
+        while (this.matchState == MatchState.UNDEFINED && rivalMatchState == MatchState.UNDEFINED){
             try {
                 if (ClientConnection.askIsMatchReady(matchID)) {
-
                     if (rival == null) {
                         try {
                             this.rival = ClientConnection.getRival(matchID, isPlayerA);
@@ -293,8 +299,8 @@ public class GameManager implements Runnable{
                     }
 
                     try {
-                        rivalGameState = ClientConnection.getGameState(matchID);
-                        if(rivalGameState != GameState.UNDEFINED){
+                        rivalMatchState = ClientConnection.getGameState(matchID);
+                        if(rivalMatchState != MatchState.UNDEFINED){
                             isGameStateFromRival = true;
                         }
                     } catch (RemoteException e) {
@@ -305,19 +311,19 @@ public class GameManager implements Runnable{
                 }
             } catch (RemoteException remoteException) {
                 remoteException.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException ignored) {
+
             }
 
         }
 
         if(isGameStateFromRival) {
-            switch (rivalGameState) {
+            switch (rivalMatchState) {
                 case PLAYER_LOST_BY_MINE:
-                    this.gameState = GameState.RIVAL_LOST_BY_MINE;
+                    this.matchState = MatchState.RIVAL_LOST_BY_MINE;
                     break;
                 case PLAYER_WON_BY_FLAG:
-                    this.gameState = GameState.RIVAL_WON_BY_FLAG;
+                    this.matchState = MatchState.RIVAL_WON_BY_FLAG;
                     break;
             }
         }

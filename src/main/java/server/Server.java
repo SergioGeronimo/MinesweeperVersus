@@ -1,13 +1,12 @@
 package server;
 
-import client.game.GameState;
-import client.model.Board;
-import client.model.Box;
-import client.model.Match;
-import client.model.Player;
+import client.game.MatchState;
+import client.model.*;
 import rmiinterface.ServerOperator;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -20,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server extends UnicastRemoteObject implements ServerOperator {
     private static final long serialVersionUID = 1L;
-    private static final String  HOSTNAME = "25.7.213.75:4444";
     private static final int MAX_MATCHES = 100;
 
     Hashtable<String, Player> playerHashtable;
@@ -44,15 +42,16 @@ public class Server extends UnicastRemoteObject implements ServerOperator {
     * @returns el id de la partida
     * */
     @Override
-    public int joinPlayerToMatch(Player player) {
+    public int joinPlayerToMatch(Player player, MatchDifficulty matchDifficulty) {
         //id de la partida a unir, AtomicInteger permite cambios dentro de expresiones lambda
         AtomicInteger id = new AtomicInteger();
         //bandera si el jugador se unio a partida, tambien permite cambios dentro de expresiones lamba
         AtomicBoolean playerJoined = new AtomicBoolean(false);
+        AtomicInteger playerIndex = new AtomicInteger(-1);
 
         //si no hay partidas, se crea una
         if (matchHashtable.isEmpty()){
-            id.set(createMatch());
+            id.set(createMatch(matchDifficulty));
         }
 
 
@@ -61,28 +60,33 @@ public class Server extends UnicastRemoteObject implements ServerOperator {
         matchHashtable.forEach( (key , value) ->{
 
             if (!playerJoined.get()) {
-                if (value.getPlayerA() == null) {
-                    value.setPlayerA(player);
-                    id.set(value.getMatchID());
-                    playerJoined.set(true);
+                if (value.getMatchDifficulty() == matchDifficulty) {
+                    if (value.getPlayerA() == null) {
+                        value.setPlayerA(player);
+                        id.set(value.getMatchID());
+                        playerJoined.set(true);
+                        playerIndex.set(0);
 
-                } else if (value.getPlayerB() == null) {
-                    value.setPlayerB(player);
-                    id.set(value.getMatchID());
-                    playerJoined.set(true);
+                    } else if (value.getPlayerB() == null) {
+                        value.setPlayerB(player);
+                        id.set(value.getMatchID());
+                        playerJoined.set(true);
+                        playerIndex.set(1);
+                    }
                 }
             }
 
         });
 
 
-        //si no se encuentra partida, se crea una y lo añade
+        //si no se encuentra partida disponible, se crea una y lo añade
         if(!playerJoined.get()){
-            id.set(createMatch());
+            id.set(createMatch(matchDifficulty));
             matchHashtable.get(id.get()).setPlayerA(player);
+            playerIndex.set(0);
         }
 
-        System.err.println("User [" + player.getNickname() + "] in game #" + id.get());
+        System.out.println("User [" + player.getNickname() + "] joined game #" + id.get() + "(" + matchDifficulty + ")");
         return id.get();
     }
 
@@ -92,7 +96,7 @@ public class Server extends UnicastRemoteObject implements ServerOperator {
     @Override
     public void detachPlayerToMatch(int matchId, String nickname) throws RemoteException {
         Match match = matchHashtable.get(matchId);
-
+        System.err.println("User [" + nickname + "] left game #" + matchId);
         if(match.getPlayerA().getNickname().equals(nickname)){
             match.setPlayerA(null);
         }else {
@@ -174,10 +178,11 @@ public class Server extends UnicastRemoteObject implements ServerOperator {
     @Override
     public boolean askIsPlayerA(int matchID, String nickname) throws RemoteException {
         Match match = matchHashtable.get(matchID);
+
         return match.getPlayerA().getNickname().equals(nickname);
     }
 
-    public int createMatch(){
+    public int createMatch(MatchDifficulty matchDifficulty){
 
         int id = 0;
 
@@ -187,6 +192,7 @@ public class Server extends UnicastRemoteObject implements ServerOperator {
         }while (matchHashtable.containsKey(id));
 
         Match createdMatch = new Match(id, 10, 10, 10);
+        createdMatch.setMatchDifficulty(matchDifficulty);
         matchHashtable.put(id, createdMatch);
 
         return id;
@@ -194,7 +200,7 @@ public class Server extends UnicastRemoteObject implements ServerOperator {
     }
 
     @Override
-    public GameState getGameState(int matchID) throws RemoteException {
+    public MatchState getGameState(int matchID) throws RemoteException {
         return matchHashtable.get(matchID).getGameState();
     }
 
@@ -205,8 +211,8 @@ public class Server extends UnicastRemoteObject implements ServerOperator {
     }
 
     @Override
-    public void setGameState(int matchID, GameState gameState) throws RemoteException {
-        matchHashtable.get(matchID).setGameState(gameState);
+    public void setGameState(int matchID, MatchState matchState) throws RemoteException {
+        matchHashtable.get(matchID).setGameState(matchState);
     }
 
     @Override
@@ -218,22 +224,5 @@ public class Server extends UnicastRemoteObject implements ServerOperator {
         }
     }
 
-    public static void main(String[] args) {
-        /*
-        if(System.getSecurityManager() == null){
-            System.setSecurityManager(new SecurityManager());
-        }*/
 
-
-        try {
-
-            System.setProperty("java.rmi.server.hostname", HOSTNAME);
-            Registry registry = LocateRegistry.createRegistry(4444);
-            Naming.rebind("rmi://"+ HOSTNAME +"/MinesweeperServer", new Server());
-            System.err.println("Server launched");
-        } catch (RemoteException | MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

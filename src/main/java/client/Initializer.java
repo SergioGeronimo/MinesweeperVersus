@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 
 public class Initializer extends Application {
 
-    private static String fxmlPath = "/layout/startMenu.fxml";
+    private static String fxmlPath = "/layout/client/startMenu.fxml";
 
     private static GameManager gameManager;
 

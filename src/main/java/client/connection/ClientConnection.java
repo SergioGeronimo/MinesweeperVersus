@@ -1,8 +1,9 @@
 package client.connection;
 
-import client.game.GameState;
+import client.game.MatchState;
 import client.model.Board;
 import client.model.Box;
+import client.model.MatchDifficulty;
 import client.model.Player;
 import rmiinterface.ServerOperator;
 
@@ -13,7 +14,7 @@ import java.rmi.RemoteException;
 
 public class ClientConnection {
     private static ServerOperator serverOperator;
-    private static final String SERVER_NAME = "//25.7.213.75:4444/MinesweeperServer";
+    private static final String SERVER_NAME = "//192.168.56.1:4444/MinesweeperServer";
 
     public static boolean connectToServer() throws
             MalformedURLException, RemoteException, NotBoundException {
@@ -40,8 +41,8 @@ public class ClientConnection {
         return successAdd;
     }
 
-    public static int joinPlayerToMatch(Player player) throws RemoteException {
-        return serverOperator.joinPlayerToMatch(player);
+    public static int joinPlayerToMatch(Player player, MatchDifficulty matchDifficulty) throws RemoteException {
+        return serverOperator.joinPlayerToMatch(player, matchDifficulty);
     }
 
     public static boolean askIsPlayerA(int matchID, String nickname) throws RemoteException {
@@ -68,7 +69,7 @@ public class ClientConnection {
         return serverOperator.getRivalBox(matchID, isPlayerA);
     }
 
-    public static GameState getGameState(int matchID) throws RemoteException{
+    public static MatchState getGameState(int matchID) throws RemoteException{
         return  serverOperator.getGameState(matchID);
     }
 
@@ -76,7 +77,7 @@ public class ClientConnection {
         return serverOperator.isMatchReady(matchId);
     }
 
-    public static void sendGameState(int matchID,GameState gameState) throws RemoteException {
-        serverOperator.setGameState(matchID, gameState);
+    public static void sendGameState(int matchID, MatchState matchState) throws RemoteException {
+        serverOperator.setGameState(matchID, matchState);
     }
 }

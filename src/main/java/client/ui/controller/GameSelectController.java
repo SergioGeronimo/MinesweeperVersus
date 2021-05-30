@@ -5,21 +5,13 @@ import client.model.Player;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 
 public class GameSelectController extends Controller{
     @FXML
@@ -63,13 +55,14 @@ public class GameSelectController extends Controller{
 
             while (!getGameManager().isMatchReady()){
                 waitingImage.setRotate(waitingImage.getRotate() + 5);
+
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.err.println("ui thread failed: " + e.getMessage());
                 }
             }
-            System.out.println("match found");
+
             Platform.runLater( () -> {
                 infoPane.getStyleClass().remove("waiting");
                 infoPane.getStyleClass().add("found");
@@ -135,8 +128,9 @@ public class GameSelectController extends Controller{
     //Cambia escena de la seleccion al juego, pasa toda
     //la informacion necesario al siguiente controlador
     public void toGameScene(){
-        setNextScenePath("/layout/game.fxml");
-        toNextScene();
+        setNextScenePath("/layout/client/game.fxml");
+        GameController controller = (GameController) toNextScene();
+        controller.setMatchReady();
     }
 
     /*
@@ -175,6 +169,7 @@ public class GameSelectController extends Controller{
         startButton.setOnMouseClicked(this::lookForMatch);
         uiThread.interrupt();
         initialize();
+        getGameManager().cancelMatch();
         nickname.setEditable(true);
         easyButton.setDisable(false);
         normalButton.setDisable(false);

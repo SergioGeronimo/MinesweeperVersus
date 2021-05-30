@@ -2,20 +2,19 @@
 Dado que la version de CSS no admite variables, aqui esta cada color usado y su uso para cada valor
 
 
-NA  Negro:      #010102     light   #2e2d2d     dark    #000000
-NA  Blanco:     #ebeaea     light   #ffffff     dark    #b9b8b8
-NA  Primario:   #4d52ff     light   #9be7ff     dark    #9be7ff
+NA  Negro:      #232323
+NA  Blanco:     #fffaf4     light   #ffffff     dark    #b9b8b8
 
 X   Rojo:       #ef5350
-F   verde-claro #98ee99
+F   Verde:      #8ce10b
 8   Rojo:       #ef5350
 7   cafe:       #8d6e63
-6   cyan:       #26c6da
+6   cyan:       #00d8eb
 5   rosa:       #ec407a
-4   morado:     #7e57c2
-3   naranja:    #ffa726
-2   Verde:      #66bb6a
-1   azul:       #4d52ff
+4   morado:     #6d43a6
+3   amarillo:   #ffb900
+2   Verde:      #8ce10b
+1   azul:       #008df8
 
 */
 @font-face {
@@ -37,12 +36,12 @@ F   verde-claro #98ee99
 }
 
 .button:hover{
-    -fx-border-color: #010102;
+    -fx-border-color: #232323;
     -fx-border-width: 2px;
 }
 
 .button:pressed{
-    -fx-background-color: #ebeaea;
+    -fx-background-color: #fffaf4;
 }
 
 .label{
@@ -55,26 +54,26 @@ F   verde-claro #98ee99
     -fx-border-width: 2px;
     -fx-border-radius: 2em;
     -fx-background-radius: 2em;
-    -fx-background-color: #ebeaea;
+    -fx-background-color: #fffaf4;
 }
 
 .text-field:focused{
     -fx-background-color: #ffffff;
-    -fx-border-color: #010102;
+    -fx-border-color: #232323;
 }
 
 .text-field:hover{
-    -fx-border-color: #010102;
+    -fx-border-color: #232323;
 }
 
 .text-area{
-    -fx-background-color: #ebeaea;
+    -fx-background-color: #fffaf4;
     -fx-border-radius: 2em;
     -fx-background-radius: 2em;
 }
 
 .found:disabled{
-    -fx-background-color: #98ee99;
+    -fx-background-color: #8ce10b;
     -fx-font-size: 2em;
     -fx-font-family: "Gontserrat Bold";
 }
@@ -127,18 +126,18 @@ F   verde-claro #98ee99
 }
 
 .easy-selected{
-    -fx-background-color: #26c6da;
-    -fx-border-color: #010102;
+    -fx-background-color: #00d8eb;
+    -fx-border-color: #232323;
 }
 
 .normal-selected{
-    -fx-background-color: #ffa726;
-    -fx-border-color: #010102;
+    -fx-background-color: #ffb900;
+    -fx-border-color: #232323;
 }
 
 .hard-selected{
     -fx-background-color: #ef5350;
-    -fx-border-color: #010102;
+    -fx-border-color: #232323;
 }
 
 .game-box{
@@ -155,7 +154,7 @@ F   verde-claro #98ee99
 
 .flagged{
     -fx-border-color: none;
-    -fx-background-color: #98ee99;
+    -fx-background-color: #8ce10b;
     -fx-background-image: url('../icons/flag.png');
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
@@ -163,7 +162,7 @@ F   verde-claro #98ee99
 
 .flagged:disabled{
     -fx-border-color: none;
-    -fx-background-color: #98ee99;
+    -fx-background-color: #8ce10b;
     -fx-background-image: url('../icons/flag.png');
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
@@ -182,23 +181,23 @@ F   verde-claro #98ee99
   }
 
 .value-0:disabled{
-    -fx-border-color: #ebeaea;
+    -fx-border-color: #fffaf4;
 }
 
 .value-1{
-    -fx-text-fill: #4d52ff;
+    -fx-text-fill: #008df8;
 }
 
 .value-2{
-    -fx-text-fill: #66bb6a;
+    -fx-text-fill: #8ce10b;
 }
 
 .value-3{
-    -fx-text-fill: #ffa726;
+    -fx-text-fill: #ffb900;
 }
 
 .value-4{
-    -fx-text-fill: #7e57c2;
+    -fx-text-fill: #6d43a6;
 }
 
 .value-5{
@@ -206,11 +205,11 @@ F   verde-claro #98ee99
 }
 
 .value-6{
-    -fx-text-fill: #26c6da;
+    -fx-text-fill: #00d8eb;
 }
 
 .value-7{
-    -fx-text-fill: #8d6e63;
+    -fx-text-fill: #7a3b2d;
 }
 
 .value-8{
@@ -218,7 +217,7 @@ F   verde-claro #98ee99
 }
 .main-container{
     -fx-background-color: #ffffff;
-    -fx-text-fill: #010102;
+    -fx-text-fill: #232323;
     -fx-font-family: "Montserrat";
     -fx-font-size: 14px;
     -fx-hgap: 0.5em;
@@ -227,7 +226,7 @@ F   verde-claro #98ee99
 }
 
 .game-menu{
-    -fx-background-color: #ebeaea;
+    -fx-background-color: #fffaf4;
 }
 
 .board-container{

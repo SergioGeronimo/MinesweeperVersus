@@ -36,7 +36,7 @@ public class GameTest {
     }
 
     public static void main(String[] args) {
-        player = new Player("test player");
+        player = new Player("test bot");
         try {
             gameManager = new GameManager();
         } catch (RemoteException e) {
@@ -61,11 +61,9 @@ public class GameTest {
             gameManager.boxActived(4,4);
             gameManager.toggleFlagStatus(5,5);
 
-
-
             ClientConnection.sendBoard(gameManager.getMatchID(), isPlayerA, gameManager.getPlayerBoard());
             //randomPlay();
-            gameManager.disconnect();
+            //gameManager.disconnect();
 
 
         } catch (MalformedURLException e) {

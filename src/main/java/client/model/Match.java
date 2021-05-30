@@ -1,6 +1,6 @@
 package client.model;
 
-import client.game.GameState;
+import client.game.MatchState;
 
 import java.io.Serializable;
 
@@ -9,7 +9,8 @@ public class Match implements Serializable {
     int matchID;
     Player playerA, playerB;
     int columns, rows, mines;
-    GameState gameState;
+    MatchState matchState;
+    MatchDifficulty matchDifficulty;
     boolean Changed;
     Box lastBoxPlayerA, lastBoxPlayerB;
     Board boardPlayerA, boardPlayerB;
@@ -20,27 +21,20 @@ public class Match implements Serializable {
         this.columns = columns;
         this.rows = rows;
         this.mines = mines;
-        this.gameState = GameState.UNDEFINED;
+        this.matchState = MatchState.UNDEFINED;
     }
 
-    public Match(
-            int matchID,
-            Player playerA,
-            Player playerB,
-            int columns,
-            int rows,
-            int mines) {
-
-        this.matchID = matchID;
-        this.playerA = playerA;
-        this.playerB = playerB;
-        this.columns = columns;
-        this.rows = rows;
-        this.mines = mines;
-        this.gameState = GameState.UNDEFINED;
-
+    public Match(MatchDifficulty matchDifficulty){
+        this.matchDifficulty = matchDifficulty;
     }
 
+    public MatchDifficulty getMatchDifficulty() {
+        return matchDifficulty;
+    }
+
+    public void setMatchDifficulty(MatchDifficulty matchDifficulty) {
+        this.matchDifficulty = matchDifficulty;
+    }
 
     public int getMatchID() {
         return matchID;
@@ -98,12 +92,12 @@ public class Match implements Serializable {
         this.mines = mines;
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public MatchState getGameState() {
+        return matchState;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
+    public void setGameState(MatchState matchState) {
+        this.matchState = matchState;
     }
 
     public Box getLastBoxPlayerA() {

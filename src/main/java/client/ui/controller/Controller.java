@@ -36,14 +36,14 @@ public class Controller {
         this.nextScenePath = nextScenePath;
     }
 
-    public void toNextScene(){
+    public Controller toNextScene(){
         Parent root;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(nextScenePath));
-
+        Controller controller = null;
         try {
             root = fxmlLoader.load();
 
-            GameSelectController controller = fxmlLoader.getController();
+            controller = fxmlLoader.getController();
             controller.setGameManager(getGameManager());
 
             controller.setScene(getScene());
@@ -51,5 +51,7 @@ public class Controller {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+
+        return controller;
     }
 }
