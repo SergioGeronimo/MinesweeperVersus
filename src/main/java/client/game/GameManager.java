@@ -21,25 +21,17 @@ public class GameManager implements Runnable{
     private int matchID;
     private Board playerBoard, rivalBoard;
     private int columns, rows, mines;
-    private int playerCorrectFlags = 0;
+    private int playerCorrectFlags = 0, playerFlags;
     private MatchState matchState = MatchState.UNDEFINED;
     private MatchDifficulty matchDifficulty;
     private boolean isGameStateFromRival;
-    private boolean matchReady;
+    private boolean matchReady, conecctionUnstable;
+    
 
-    public GameManager() throws RemoteException, NotBoundException, MalformedURLException {
-        updateInfoThread = new Thread(this);
-        ClientConnection.connectToServer();
-    }
-
-    public GameManager(int columns, int rows, int mines) {
-        this.columns = columns;
-        this.rows = rows;
-        this.mines = mines;
-        //matchID = -1 indica que no se encuentra un ID legal
-        this.matchID = -1;
+    public GameManager(){
         updateInfoThread = new Thread(this);
     }
+
 
     public Player getPlayer() {
         return player;
@@ -53,162 +45,120 @@ public class GameManager implements Runnable{
         return rival;
     }
 
-    public void setRival(Player rival) {
-        this.rival = rival;
+    public boolean isConecctionUnstable() {
+        return conecctionUnstable;
     }
+
 
     public int getMatchID() {
         return matchID;
-    }
-
-    public void setMatchID(int matchID) {
-        this.matchID = matchID;
-    }
-
-    public int getPlayerCorrectFlags() {
-        return playerCorrectFlags;
-    }
-
-    public void setPlayerCorrectFlags(int playerCorrectFlags) {
-        this.playerCorrectFlags = playerCorrectFlags;
     }
 
     public Board getPlayerBoard() {
         return playerBoard;
     }
 
-    public void setPlayerBoard(Board playerBoard) {
-        this.playerBoard = playerBoard;
-    }
 
     public Board getRivalBoard() {
         return rivalBoard;
     }
 
-    public void setRivalBoard(Board rivalBoard) {
-        this.rivalBoard = rivalBoard;
-    }
 
     public int getColumns() {
         return columns;
-    }
-
-    public void setColumns(int columns) {
-        this.columns = columns;
     }
 
     public int getRows() {
         return rows;
     }
 
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
 
     public int getMines() {
         return mines;
     }
 
-    public void setMines(int mines) {
-        this.mines = mines;
-    }
 
     public MatchState getGameState() {
         return matchState;
     }
 
-    public void setGameState(MatchState matchState) {
-        this.matchState = matchState;
+
+    public void setServerAddress(String address){
+        ClientConnection.setServerAddress(address);
+    }
+
+    public boolean connect() throws RemoteException, NotBoundException, MalformedURLException {
+        return ClientConnection.connectToServer();
     }
 
     //desconectar del servidor
-    public void disconnect() {
+    public void disconnect() throws RemoteException, NotBoundException, MalformedURLException {
         try {
             updateInfoThread.interrupt();
         } catch (Exception exception) {
-            exception.printStackTrace();
+            restartInfoThread();
         }
+        ClientConnection.disconnect(player);
 
-        try {
-            ClientConnection.disconnect(player);
-        } catch (MalformedURLException | RemoteException | NotBoundException e) {
-            e.printStackTrace();
-        }
+    }
+
+    private void restartInfoThread() {
+        updateInfoThread = new Thread(this);
     }
 
 
-    public void setMatchReady() {
-        try {
-            this.matchID = ClientConnection.joinPlayerToMatch(player, matchDifficulty);
-        } catch (RemoteException remoteException) {
-            remoteException.printStackTrace();
-        }
+    public void setMatchReady() throws RemoteException {
+        this.matchID = ClientConnection.joinPlayerToMatch(player, matchDifficulty);
 
 
-        playerBoard = new Board(columns,rows,mines);
+        playerBoard = new Board(columns, rows, mines);
         playerBoard.generateEmptyGrid();
-        try {
-            updateInfoThread.start();
-            isPlayerA = ClientConnection.askIsPlayerA(this.matchID,player.getNickname());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+
+        updateInfoThread.start();
+        isPlayerA = ClientConnection.askIsPlayerA(this.matchID, player.getNickname());
 
 
     }
     //interrumpe el hilo para actualizar informacion y crea uno nuevo, es decir "reinicia el hilo"
-    public void cancelMatch(){
+    public void cancelMatch() throws RemoteException {
         updateInfoThread.interrupt();
         updateInfoThread = new Thread(this);
         playerBoard = null;
-        try {
-            ClientConnection.detachPlayerToMatch(matchID, player);
-        } catch (RemoteException remoteException) {
-            remoteException.printStackTrace();
+        if (this.matchState == MatchState.UNDEFINED){
+            this.matchState = MatchState.PLAYER_SURRENDER;
+            ClientConnection.sendGameState(this.matchID, this.matchState);
         }
+
+        ClientConnection.detachPlayerToMatch(matchID, player);
+
     }
 
 
     //genera minas y los indicadores
-    public void startMatchAt(int column, int row) {
+    public void startMatchAt(int column, int row) throws RemoteException {
         playerBoard.generateMines(column, row);
         playerBoard.fillNearIndicators();
 
-        try {
             ClientConnection.sendBoard(matchID, isPlayerA, playerBoard) ;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     //casilla activada, descubrir la casilla y enviarla al servidor
-    public void boxActived(int column, int row) {
-        try {
+    public void boxActived(int column, int row) throws RemoteException {
             playerBoard.setVisibleEmptyNeighbours(column, row);
             ClientConnection.sendBox(matchID,
                     isPlayerA,
                     playerBoard.getBoxAt(column, row));
 
-        }catch (ArrayIndexOutOfBoundsException ignored){
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
         calculateGameState(column, row, false);
-        try {
             ClientConnection.sendGameState(this.matchID, this.matchState);
-        } catch (RemoteException remoteException) {
-            remoteException.printStackTrace();
-        }
 
     }
 
 
     /*  calcula el estado del juego de acuerdo a la ultima casilla activada
-     *  @param coordenadas de la casilla(column, row) y playerDroppedFlag si en esa casilla se quito una bandera
+     *  @param coordenadas de la casilla(column, row) y flagAdded si en esa casilla se añadio una bandera
      */
-    private void calculateGameState(int column, int row, boolean playerDroppedFlag) {
+    private void calculateGameState(int column, int row, boolean flagAdded) {
         Box box = playerBoard.getBoxAt(column, row);
 
         //si la casilla activada es una mina, el jugador pierde
@@ -221,14 +171,15 @@ public class GameManager implements Runnable{
                     && box.getStatus() == BoxStatus.FLAGGED){
             //se aumenta el contador de banderas correctas
             playerCorrectFlags++;
-
+            System.out.println("correctfalgs = " +playerCorrectFlags);
+            System.out.println("playerFlags = " + playerFlags);
             //cuando todas las minas tengan banderas, el jugador gana
-            if (playerCorrectFlags == mines){
+            if (playerCorrectFlags == mines && playerFlags == mines){
                 this.matchState = MatchState.PLAYER_WON_BY_FLAG;
 
             }
         //si se quita una bandera correcta, entonces el contador de banderas decrece en uno
-        }else if(playerDroppedFlag
+        }else if(!flagAdded
                     && box.getValue() == BoxValue.MINE){
             playerCorrectFlags--;
         }
@@ -238,28 +189,27 @@ public class GameManager implements Runnable{
 
     /*
     * Alternar el estado de bandera o escondido, se envia el resultado
+    * @returns verdadero si se añade una bandera, falso si se quita una
     *
     * */
-    public void toggleFlagStatus(int column, int row){
+    public boolean toggleFlagStatus(int column, int row) throws RemoteException {
         Box box = playerBoard.getBoxAt(column, row);
-
         switch (box.getStatus()){
             case HIDDEN:
                 box.setStatus(BoxStatus.FLAGGED);
-                calculateGameState(column, row, false);
+                playerFlags++;
                 break;
             case FLAGGED:
                 box.setStatus(BoxStatus.HIDDEN);
-                calculateGameState(column, row, true);
+                playerFlags--;
                 break;
         }
+        boolean flagAdded = box.getStatus() == BoxStatus.FLAGGED;
+        calculateGameState(column, row, flagAdded);
+        ClientConnection.sendBox(matchID, isPlayerA, box);
+        ClientConnection.sendGameState(matchID, this.matchState);
 
-        try {
-            ClientConnection.sendBox(matchID, isPlayerA, box);
-            ClientConnection.sendGameState(matchID, this.matchState);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        return flagAdded;
     }
 
     /*
@@ -278,7 +228,7 @@ public class GameManager implements Runnable{
                         try {
                             this.rival = ClientConnection.getRival(matchID, isPlayerA);
                         } catch (RemoteException e) {
-                            e.printStackTrace();
+                            this.conecctionUnstable = true;
                         }
                     }
 
@@ -286,18 +236,22 @@ public class GameManager implements Runnable{
                         try {
                             this.rivalBoard = ClientConnection.getRivalBoard(matchID, isPlayerA);
                         } catch (RemoteException e) {
-                            e.printStackTrace();
+                            this.conecctionUnstable = true;
                         }
                     }
 
                     try {
                         Box lastBox = ClientConnection.getRivalBox(matchID, isPlayerA);
                         if (lastBox != null) {
-                            rivalBoard.setVisibleEmptyNeighbours(lastBox.getColumn(), lastBox.getRow());
+                            if(lastBox.getStatus() == BoxStatus.FLAGGED){
+                                rivalBoard.setBoxStatus(lastBox.getColumn(), lastBox.getRow(), BoxStatus.FLAGGED);
+                            }else {
+                                rivalBoard.setVisibleEmptyNeighbours(lastBox.getColumn(), lastBox.getRow());
+                            }
                         }
 
                     } catch (RemoteException e) {
-                        e.printStackTrace();
+                        this.conecctionUnstable = true;;
                     }
 
                     try {
@@ -306,7 +260,7 @@ public class GameManager implements Runnable{
                             isGameStateFromRival = true;
                         }
                     } catch (RemoteException e) {
-                        e.printStackTrace();
+                        this.conecctionUnstable = true;;
                     }
 
                     Thread.sleep(50);
@@ -327,6 +281,8 @@ public class GameManager implements Runnable{
                 case PLAYER_WON_BY_FLAG:
                     this.matchState = MatchState.RIVAL_WON_BY_FLAG;
                     break;
+                case PLAYER_SURRENDER:
+                    this.matchState = MatchState.RIVAL_SURRENDER;
             }
         }
 
@@ -347,8 +303,8 @@ public class GameManager implements Runnable{
                 break;
             case HARD:
                 this.mines = 99;
-                this.columns = 30;
-                this.rows = 16;
+                this.columns = 20;
+                this.rows = 20;
                 break;
         }
     }

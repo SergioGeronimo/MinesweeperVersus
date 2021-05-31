@@ -41,6 +41,7 @@ public class Controller {
         Window sceneWindow = scene.getWindow();
         sceneWindow.setWidth(width);
         sceneWindow.setHeight(height);
+        sceneWindow.centerOnScreen();
     }
 
     public Controller toNextScene(){

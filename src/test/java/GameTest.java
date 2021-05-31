@@ -14,7 +14,7 @@ public class GameTest {
     private static GameManager gameManager;
     private static boolean isPlayerA;
 
-    public static void randomPlay(){
+    public static void randomPlay() throws RemoteException {
         Random random = new Random();
         int x, y;
         for (int i =0; i < 100; i++){
@@ -37,20 +37,13 @@ public class GameTest {
 
     public static void main(String[] args) {
         player = new Player("test bot");
-        try {
-            gameManager = new GameManager();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        gameManager = new GameManager();
 
         gameManager.setPlayer(player);
         gameManager.setDifficulty(MatchDifficulty.EASY);
 
         try {
+            gameManager.setServerAddress("192.168.56.1");
             ClientConnection.connectToServer();
             ClientConnection.addClient(player);
 

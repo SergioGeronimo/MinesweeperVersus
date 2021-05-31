@@ -38,7 +38,7 @@
             GridPane.columnIndex="0"
             GridPane.columnSpan="3"
             styleClass="centered-text"
-            GridPane.halignment="CENTER"
+            GridPane.valignment="BOTTOM"
             text="Ingresa tu nombre de jugador"/>
 
     <TextField
@@ -48,10 +48,25 @@
             fx:id="nickname"
     />
 
+    <Label
+            GridPane.rowIndex="3"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="3"
+            styleClass="centered-text"
+            GridPane.valignment="BOTTOM"
+            text="Ingresa IP del servidor"/>
+
+    <TextField
+            GridPane.rowIndex="4"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="3"
+            fx:id="address"
+    />
+
 
 
     <Label
-            GridPane.rowIndex="4"
+            GridPane.rowIndex="5"
             GridPane.columnIndex="0"
             GridPane.columnSpan="3"
             GridPane.halignment="CENTER"
@@ -60,21 +75,21 @@
     />
 
     <Button
-            GridPane.rowIndex="5"
+            GridPane.rowIndex="6"
             GridPane.columnIndex="0"
             text="facil"
             fx:id="easyButton"
             styleClass="tall, wide"
             onMouseClicked="#setEasyGame"/>
     <Button
-            GridPane.rowIndex="5"
+            GridPane.rowIndex="6"
             GridPane.columnIndex="1"
             text="normal"
             fx:id="normalButton"
             styleClass="tall, wide"
             onMouseClicked="#setNormalGame"/>
     <Button
-            GridPane.rowIndex="5"
+            GridPane.rowIndex="6"
             GridPane.columnIndex="2"
             text="dificil"
             fx:id="hardButton"

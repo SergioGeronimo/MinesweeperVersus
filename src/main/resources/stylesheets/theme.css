@@ -241,3 +241,20 @@ F   Verde:      #8ce10b
 .defeat{
     -fx-background-color: rgba(239, 83, 80, 0.25);
 }
+
+.maximize {
+    -fx-background-image: url('../icons/flag.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.minimize{
+    -fx-background-image: url('../icons/mine.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.icon {
+    -fx-pref-height: 1em;
+    -fx-pref-width: 1em;
+}

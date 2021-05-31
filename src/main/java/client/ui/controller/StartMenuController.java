@@ -22,11 +22,4 @@ public class StartMenuController extends Controller{
         setNextScenePath("/layout/client/gameSelect.fxml");
         toNextScene();
     }
-
-    public void changeSceneToSettings(MouseEvent mouseEvent) {
-        setNextScenePath("/layout/client/settings.fxml");
-        toNextScene();
-    }
-
-
 }

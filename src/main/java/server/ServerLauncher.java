@@ -14,14 +14,14 @@ public class ServerLauncher {
 
     public static void main(String[] args) {
         try {
-            hostname = InetAddress.getLocalHost().getHostAddress();
+            hostname = "localhost";
             System.out.println("Server IPv4:\t" + hostname);
 
             System.setProperty("java.rmi.server.hostname", hostname);
             Registry registry = LocateRegistry.createRegistry(PORT);
             Naming.rebind("//"+ hostname + ":" + PORT +"/MinesweeperServer", new Server());
             System.out.println("Server launched");
-        } catch (RemoteException | MalformedURLException | UnknownHostException e) {
+        } catch (RemoteException | MalformedURLException e) {
             e.printStackTrace();
         }
 

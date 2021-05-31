@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -13,26 +14,23 @@ import javafx.scene.layout.*;
 import client.model.Board;
 import client.model.Box;
 import client.model.BoxValue;
+import javafx.stage.Stage;
+
+import java.rmi.RemoteException;
 
 public class GameController extends Controller{
     @FXML
-    private Label resultLabel;
+    private Button screenButton;
     @FXML
-    private Label resultInfo;
+    private Pane resultBanner;
     @FXML
-    private GridPane resultContainer;
+    private Label connectionInfo, resultLabel, resultInfo, playerLabel, playerFlagsLabel, rivalLabel;
+    @FXML
+    private GridPane resultContainer, mainContainer, rivalBoardContainer, playerBoardContainer;
     @FXML
     private VBox gameMenu;
-    @FXML
-    private GridPane mainContainer;
-    @FXML
-    private Label playerLabel;
-    @FXML
-    private Label rivalLabel;
-    @FXML
-    private GridPane rivalBoardContainer;
-    @FXML
-    private GridPane playerBoardContainer;
+
+    private int playerFlagsLeftCount, rivalFlagsCount;
 
     private GameBoxButton[][] playerBoxButtons, rivalBoxButtons;
 
@@ -62,7 +60,6 @@ public class GameController extends Controller{
 
         playerBoxButtons = new GameBoxButton[getGameManager().getRows()][getGameManager().getColumns()];
         rivalBoxButtons = new GameBoxButton[getGameManager().getRows()][getGameManager().getColumns()];
-        
 
         fillGridPaneWithButtons(
                 playerBoardContainer,
@@ -74,6 +71,7 @@ public class GameController extends Controller{
                 rivalBoxButtons,
                 true);
 
+        playerFlagsLeftCount = getGameManager().getMines();
     }
 
     /*
@@ -84,8 +82,11 @@ public class GameController extends Controller{
     public void startMatch(MouseEvent mouseEvent){
         GameBoxButton source = (GameBoxButton) mouseEvent.getSource();
 
-        getGameManager().startMatchAt(source.getColumn(), source.getRow());
-
+        try {
+            getGameManager().startMatchAt(source.getColumn(), source.getRow());
+        } catch (RemoteException remoteException) {
+            connectionInfo.setVisible(true);
+        }
 
 
         for (int rowIndex = 0; rowIndex < playerBoxButtons.length; rowIndex++) {
@@ -100,8 +101,8 @@ public class GameController extends Controller{
             }
         }
 
-        handleBoxClicked(mouseEvent);
         startUIUpdateThread();
+        handleBoxClicked(mouseEvent);
 
     }
 
@@ -125,13 +126,12 @@ public class GameController extends Controller{
         GameBoxButton[][][] allButtons = {playerBoxButtons, rivalBoxButtons};
 
         do{
-
-            if(getGameManager().getRival() != null) {
                 Platform.runLater(() -> {
+                    playerLabel.setText(getGameManager().getPlayer().getNickname());
                     rivalLabel.setText(getGameManager().getRival().getNickname());
-                });
-            }
+                    playerFlagsLabel.setText("" + playerFlagsLeftCount);
 
+                });
 
             for (int boardIndex = 0; boardIndex < allBoards.length; boardIndex++) {
                 for (int rowIndex = 0; rowIndex < getGameManager().getRows(); rowIndex++) {
@@ -146,15 +146,20 @@ public class GameController extends Controller{
                             case FLAGGED:
                                 //bugfix ui_1: busca si la casilla ya tenia la clase asi no tiene la clase dos veces
                                 if (!gameBoxButton.getStyleClass().contains("flagged"))
-                                    gameBoxButton.getStyleClass().add("flagged");
-
+                                    Platform.runLater(()->{
+                                        gameBoxButton.getStyleClass().add("flagged");
+                                    });
                                 break;
                             case VISIBLE:
                                 String value = box.getValue().getValue();
 
+                                Platform.runLater(()->{
+
+
                                 gameBoxButton.getStyleClass().remove("flagged");
                                 gameBoxButton.getStyleClass().add("value-" + value);
                                 gameBoxButton.setDisable(true);
+                                });
 
                                 if (!value.equals(BoxValue.MINE.getValue())) {
                                     //cambios directos en ui dentro de un hilo
@@ -167,8 +172,11 @@ public class GameController extends Controller{
                                 break;
                             case HIDDEN:
                                 //bugfix ui_1: elimina las banderas
-                                gameBoxButton.getStyleClass().remove("flagged");
-                                gameBoxButton.setText("");
+                                Platform.runLater(() -> {
+                                    gameBoxButton.getStyleClass().remove("flagged");
+                                    gameBoxButton.setText("");
+                                });
+
                                 break;
 
                         }
@@ -179,6 +187,7 @@ public class GameController extends Controller{
                     }
                 }
             }
+            connectionInfo.setVisible( getGameManager().isConecctionUnstable() );
 
             Thread.sleep(100);
         }while (keepRunning);
@@ -191,17 +200,24 @@ public class GameController extends Controller{
         MatchState matchState = getGameManager().getGameState();
 
         if (    matchState == MatchState.RIVAL_WON_BY_FLAG ||
+                matchState == MatchState.PLAYER_SURRENDER ||
                 matchState == MatchState.PLAYER_LOST_BY_MINE){
-            resultContainer.getStyleClass().add("defeat");
-            resultLabel.setText("Derrota");
+            Platform.runLater(()->{
+                resultBanner.getStyleClass().add("defeat");
+                resultLabel.setText("Derrota");
+            });
+
 
         }else {
-            resultContainer.getStyleClass().add("victory");
-            resultLabel.setText("Victoria");
+            Platform.runLater(() ->{
+                resultBanner.getStyleClass().add("victory");
+                resultLabel.setText("Victoria");
+            });
+
         }
-
-        resultInfo.setText(matchState.toString());
-
+        Platform.runLater(()->{
+            resultInfo.setText(matchState.toString());
+        });
     }
 
 
@@ -217,13 +233,21 @@ public class GameController extends Controller{
         int boxColumn = boxButtonSource.getColumn();
         int boxRow = boxButtonSource.getRow();
 
-        if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            getGameManager().boxActived(boxColumn, boxRow);
+        try {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                getGameManager().boxActived(boxColumn, boxRow);
 
-        }else {
+            } else {
+                boolean flagAdded = getGameManager().toggleFlagStatus(boxColumn, boxRow);
+                if (flagAdded){
+                    playerFlagsLeftCount--;
+                }else {
+                    playerFlagsLeftCount++;
+                }
 
-            getGameManager().toggleFlagStatus(boxColumn, boxRow);
-
+            }
+        }catch (RemoteException e){
+            connectionInfo.setVisible(true);
         }
 
 
@@ -297,4 +321,28 @@ public class GameController extends Controller{
 
     }
 
+    public void endMatch(MouseEvent mouseEvent) {
+        try {
+            getGameManager().cancelMatch();
+        } catch (RemoteException remoteException) {
+            connectionInfo.setVisible(true);
+        }
+        setNextScenePath("/layout/client/gameSelect.fxml");
+    }
+
+    public void enterFullscreen(MouseEvent mouseEvent) {
+        ((Stage) getScene().getWindow()).setFullScreen(true);
+        screenButton.setOnMouseClicked(this::exitFullscreen);
+        ObservableList<String> styleClass = screenButton.getStyleClass();
+        styleClass.remove("maximize");
+        styleClass.add("minimize");
+    }
+
+    public void exitFullscreen(MouseEvent mouseEvent){
+        ((Stage) getScene().getWindow()).setFullScreen(false);
+        screenButton.setOnMouseClicked(this::enterFullscreen);
+        ObservableList<String> styleClass = screenButton.getStyleClass();
+        styleClass.remove("minimize");
+        styleClass.add("maximize");
+    }
 }

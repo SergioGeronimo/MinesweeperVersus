@@ -13,7 +13,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+
 public class GameSelectController extends Controller{
+    @FXML
+    private TextField address;
     @FXML
     private Button startButton, easyButton, normalButton, hardButton;
     @FXML
@@ -36,7 +42,8 @@ public class GameSelectController extends Controller{
     @FXML
     public void initialize(){
         infoLabel = new Label();
-        waitingImage = new ImageView("/icons/mine.png");
+        infoLabel.setWrapText(true);
+        waitingImage = new ImageView("/icons/loader.png");
 
         infoPane.getChildren().add(infoLabel);
 
@@ -139,21 +146,45 @@ public class GameSelectController extends Controller{
     * Inicia el hilo para la animacion de espera
     * */
     public void lookForMatch(MouseEvent actionEvent) {
-        if (validateStartCondition()){
+        boolean isConnected = false;
+        if (validateFields()){
             getGameManager()
-                    .setPlayer(
-                    new Player(nickname.getText())
+                    .setServerAddress(
+                            address.getText()
                     );
+            try {
+                isConnected = getGameManager().connect();
+            } catch (RemoteException remoteException) {
+                infoLabel.setText("Error en el servidor");
+                remoteException.printStackTrace();
+            } catch (NotBoundException e) {
+                infoLabel.setText("Servidor no encontrado");
+            } catch (MalformedURLException e) {
+                infoLabel.setText("Dirección IP inválida");
+            }
 
-            nickname
-                    .getStyleClass()
-                    .remove("required");
+            if (isConnected){
+                getGameManager()
+                        .setPlayer(
+                                new Player(nickname.getText())
+                        );
 
-            startButton.setText("Cancelar");
-            startButton.setOnMouseClicked(this::cancelMatch);
-            getGameManager().setMatchReady();
+                nickname
+                        .getStyleClass()
+                        .remove("required");
 
-            uiThread.start();
+                startButton.setText("Cancelar");
+                startButton.setOnMouseClicked(this::cancelMatch);
+                try {
+                    getGameManager().setMatchReady();
+                } catch (RemoteException remoteException) {
+                    infoLabel.setText("Error accesando al servidor");
+                }
+
+                uiThread.start();
+            }
+
+
 
         }else {
             nickname.getStyleClass()
@@ -169,8 +200,16 @@ public class GameSelectController extends Controller{
         startButton.setText("Buscar partida");
         startButton.setOnMouseClicked(this::lookForMatch);
         uiThread.interrupt();
+
+        infoPane.getChildren().remove(waitingImage);
+        infoPane.getChildren().remove(infoLabel);
+
         initialize();
-        getGameManager().cancelMatch();
+        try {
+            getGameManager().cancelMatch();
+        } catch (RemoteException remoteException) {
+            infoLabel.setText(remoteException.getMessage());
+        }
         nickname.setEditable(true);
         easyButton.setDisable(false);
         normalButton.setDisable(false);
@@ -180,7 +219,7 @@ public class GameSelectController extends Controller{
     /*
     * Validacion del nombre de usuario y dificultad
     * */
-    public boolean validateStartCondition(){
+    public boolean validateFields(){
         return !nickname.getText().equals("") && getGameManager().getDifficulty() != null;
     }
 }

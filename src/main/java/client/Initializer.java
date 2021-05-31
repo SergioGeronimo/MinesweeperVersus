@@ -33,6 +33,7 @@ public class Initializer extends Application {
         //ajustes de ventana
         stage.setTitle("Minesweeper versus");
         stage.setScene(new Scene(root, 480, 852));
+        stage.setResizable(false);
         controller.setScene(stage.getScene());
         stage.centerOnScreen();
         stage.show();
@@ -45,11 +46,7 @@ public class Initializer extends Application {
     }
 
     public static void main(String[] args) {
-        try {
-            gameManager = new GameManager();
-        } catch (RemoteException | NotBoundException | MalformedURLException e) {
-            e.printStackTrace();
-        }
+        gameManager = new GameManager();
         launch(args);
     }
 }

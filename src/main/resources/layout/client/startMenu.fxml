@@ -39,14 +39,5 @@
             onMouseClicked="#changeSceneToSelect"
             text="Jugar"/>
 
-    <Button
-            styleClass="wide"
-            GridPane.columnIndex="0"
-            GridPane.rowIndex="3"
-            onMouseClicked="#changeSceneToSettings"
-            text="Configuraciones"
-    />
-
-
 
 </GridPane>

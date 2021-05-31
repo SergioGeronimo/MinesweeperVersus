@@ -14,11 +14,19 @@ import java.rmi.RemoteException;
 
 public class ClientConnection {
     private static ServerOperator serverOperator;
-    private static final String SERVER_NAME = "//192.168.56.1:4444/MinesweeperServer";
+    private static String serverName;
+
+    public static String getServerName() {
+        return serverName;
+    }
+
+    public static void setServerAddress(String address) {
+        ClientConnection.serverName = "//" + address + ":4444/MinesweeperServer";
+    }
 
     public static boolean connectToServer() throws
             MalformedURLException, RemoteException, NotBoundException {
-        serverOperator = (ServerOperator) Naming.lookup(SERVER_NAME);
+        serverOperator = (ServerOperator) Naming.lookup(serverName);
         return serverOperator != null;
     }
 
